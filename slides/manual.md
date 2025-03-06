@@ -97,7 +97,7 @@ Both inline and display formats are supported.
 \]
 ]]]
 
-# Text Formatting and Decoration
+## Text Formatting and Decoration
 * Link: [This is a link](https://kjmtks.github.io/md-slide-js).
 * Emphasis: *This is emphasized text*.
 * Italic: _This is italic text_.
@@ -113,6 +113,7 @@ Both inline and display formats are supported.
 [: date = 2025/3/7 :]
 * Reassignment is also possible: [:: date ::]
 
+---
 # Shortcut key
 
 * `f`: Fullscreen
