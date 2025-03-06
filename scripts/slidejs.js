@@ -5,6 +5,15 @@
          };
         const res_md = await fetch(markdown_path);
         const content = await res_md.text();
+
+        let markdown_dir = "";
+        try {
+            const url = new URL(markdown_path);
+            markdown_dir = url.origin + url.pathname.substring(0, url.pathname.lastIndexOf("/") + 1);
+        } catch (e) {
+            markdown_dir = markdown_path.replace(/\/[^/]*$/, "/");
+        }
+
         marked.use({
             breaks: true,
             gfm: true,
@@ -18,7 +27,7 @@
                 this.multiColumnTokenizer()
             ],
             walkTokens : this.slidejsWalkTokens(),
-            renderer: this.slidejsRenderer(this.variables)
+            renderer: this.slidejsRenderer(this.variables, markdown_dir)
         });
         dom.innerHTML = `<section data-style="content">${await marked.parse(content)}</section>`;
         const slidejs_id = Math.random();
@@ -57,7 +66,7 @@
                 section.remove();
             }
         }
-    
+
         // Page
         const sections = document.querySelectorAll("section");
         for (let [index, section] of sections.entries()) {
@@ -91,7 +100,7 @@
                     variables[md[1]] = md[2];
                     return "";
                 }
-        
+
                 md = token.text.match(/\s*page\s+(.+)\s*/);
                 if (md) {
                     const dom = document.createElement("meta");
@@ -262,7 +271,7 @@
         };
     }
 
-    slidejsRenderer(variables) {
+    slidejsRenderer(variables, markdown_dir) {
         return {
             hr(hr) {
                 variables["page_number"] = variables["page_number"] + 1
@@ -279,10 +288,16 @@
                 return `<div class="heading${heading.depth}">${this.parser.parseInline(heading.tokens)}</div>`;
             },
             image(image) {
-                if (image.text) {
-                    return `<figure><img src=${image.href} alt=${image.text}><figcaption>${image.text}</figcaption></figure>`;
+                let src = "";
+                if (/^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i.test(image.href)) {
+                    src = image.href;
                 } else {
-                    return `<figure><img src=${image.href} alt=${image.text}></figure>`;
+                    src = markdown_dir + image.href;
+                }
+                if (image.text) {
+                    return `<figure><img src="${src}" alt=${image.text}><figcaption>${image.text}</figcaption></figure>`;
+                } else {
+                    return `<figure><img src="${src}" alt=${image.text}></figure>`;
                 }
             },
             table(table) {
