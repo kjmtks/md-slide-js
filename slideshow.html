@@ -1,0 +1,121 @@
+﻿
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=M+PLUS+1p&display=swap");
+        @import url("https://cdn.jsdelivr.net/npm/@fontsource/cascadia-mono@4.2.1/index.min.css");
+    </style>
+    <link rel="stylesheet" href="/styles/slidejs.css" />
+    <link rel="stylesheet" href="/styles/external/highlight-style/vs.min.css" />
+
+    <script lang="javascript"src="/scripts/external/highlight.min.js"></script>
+    <script lang="javascript"src="/scripts/external/marked.min.js"></script>
+    <script lang="javascript"src="/scripts/external/mathjax-tex-svg.js" async="true"></script>
+    <script lang="javascript" src="/scripts/slidejs.js"></script>
+
+</head>
+
+<body>
+
+    <div class="dashboard">
+        <div class="left-side">
+            <div class=""></div>
+            <div class="thumbnails slidejs"></div>
+        </div>
+        <div class="preview-area">
+            <div class="main-slide slidejs">
+            </div>
+            <div class="note-preview"></div>
+        </div>
+    </div>
+    
+    
+    
+    <script lang="javascript">
+
+        function selectThumbnail(page_number) {
+            const dom_thumbnails = document.querySelector(".thumbnails");
+            const dom_thumbs = dom_thumbnails.querySelectorAll(".thumbnail");
+            for (let [index, dom_thumb] of dom_thumbs.entries()) {
+                if (index + 1 == page_number) {
+                    dom_thumb.classList.add("active");
+                    dom_thumb.scrollIntoView();
+
+                } else {
+                    dom_thumb.classList.remove("active");
+                }
+            }
+        }
+
+        window.addEventListener("keydown", (event) => {
+            if (event.key === "c") {
+                if (document.querySelector(".note-preview").classList.contains("show")) {
+                    document.querySelector(".note-preview").classList.remove("show")
+                } else {
+                    document.querySelector(".note-preview").classList.add("show")
+                }
+            }
+        });
+
+        window.addEventListener("load", async () => {
+            const dom_slideshow_container = document.querySelector(".main-slide");
+            const url = new URL(window.location.href);
+            const md = url.searchParams.get("md");
+            const p = url.searchParams.get("p");
+            const md_path = `${md}`
+            const initial_page_number = p ? parseInt(p) : 1;
+            
+            const dom_note_preview = document.querySelector(".note-preview");
+            const afterShowPageCallback = (page_number, dom_current_page) => {
+                const notes = dom_current_page.querySelectorAll(".note");
+                let note_html = "";
+                for (let note of notes) {
+                    note_html = note_html + note.innerHTML;
+                }
+                dom_note_preview.innerHTML = note_html;
+
+                const url = new URL(window.location);
+                url.searchParams.set("p", page_number);
+                window.history.replaceState(null, "", url.toString());
+                
+                selectThumbnail(page_number);
+            }
+
+            const slideshow = new SlideJSSlideShow(dom_slideshow_container, md_path, initial_page_number, afterShowPageCallback);
+            await slideshow.buildAsync();
+            
+            /* Execute once after build slides */
+            await MathJax.typesetPromise();
+            hljs.highlightAll();
+
+            const dom_thumbnails = document.querySelector(".thumbnails");
+            const thumbnails = slideshow.generateThumbnails();
+            for (let dom_thumb_page of thumbnails) {
+                const page_number = parseInt(dom_thumb_page.getAttribute("data-page-number"));
+                const dom_thumb = document.createElement("div");
+                dom_thumb.classList.add("thumbnail");
+                dom_thumb.appendChild(dom_thumb_page);
+                
+                const dom_page_number = document.createElement("div");
+                dom_page_number.classList.add("page-number-icon");
+                dom_page_number.innerText = page_number;
+                dom_thumb.appendChild(dom_page_number);
+
+                dom_thumb.addEventListener("click", (event) => {
+                    slideshow.showPage(page_number);
+                });
+
+                dom_thumbnails.appendChild(dom_thumb)
+            }
+
+            slideshow.activate();
+            selectThumbnail(initial_page_number);
+        });
+    </script>
+</body>
+</html>
