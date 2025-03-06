@@ -44,8 +44,7 @@
             for (let [index, dom_thumb] of dom_thumbs.entries()) {
                 if (index + 1 == page_number) {
                     dom_thumb.classList.add("active");
-                    dom_thumb.scrollIntoView();
-
+                    dom_thumb.scrollIntoView({behavior: 'smooth', block: 'center'});
                 } else {
                     dom_thumb.classList.remove("active");
                 }
