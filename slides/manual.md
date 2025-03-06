@@ -100,7 +100,7 @@ Both inline and display formats are supported.
 # Text Formatting and Decoration
 * Link: [This is a link](https://kjmtks.github.io/md-slide-js).
 * Emphasis: *This is emphasized text*.
-* Italic: __This is italic text__.
+* Italic: _This is italic text_.
 * Bold: **This is bold text**.
 * Strikethrough: ~~This is strikethrough text~~.
 * Blockquote:
