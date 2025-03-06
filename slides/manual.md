@@ -98,11 +98,11 @@ Both inline and display formats are supported.
 ]]]
 
 # Text Formatting and Decoration
-* Link: This is a link.
-* Emphasis: This is emphasized text.
-* Italic: This is italic text.
-* Bold: This is bold text.
-* Strikethrough: This is strikethrough text.
+* Link: [This is a link](https://kjmtks.github.io/md-slide-js).
+* Emphasis: *This is emphasized text*.
+* Italic: __This is italic text__.
+* Bold: **This is bold text**.
+* Strikethrough: ~~This is strikethrough text~~.
 * Blockquote:
 
 > aaaa
