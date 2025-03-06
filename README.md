@@ -1,4 +1,3 @@
-# md-slide.js
 
 [Demo](https://kjmtks.github.io/md-slide-js/slideshow.html?md=https://kjmtks.github.io/md-slide-js/slides/manual.md)
 

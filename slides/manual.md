@@ -13,7 +13,7 @@ This is the presenter notes section.
 -->
 
 ---
-# 概要
+# Introduction
 
 * I want to create slides using Markdown.
 * Marp is a strong candidate, especially with its VSCode extension. However, I find some inconveniences:
