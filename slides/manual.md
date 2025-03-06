@@ -112,3 +112,8 @@ Both inline and display formats are supported.
 * Preassigned values can be referenced at any time: [:: date ::]
 [: date = 2025/3/7 :]
 * Reassignment is also possible: [:: date ::]
+
+# Shortcut key
+
+* `f`: Fullscreen
+* `c`: Open or close presenter note.
