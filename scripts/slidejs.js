@@ -340,7 +340,7 @@
         if (token.type === "code") {
             let lang = token.lang.match(/^([^:]+)/);
             if (lang && !hljs.listLanguages().includes(lang[1])) {
-                const url = `/scripts/external/highlight-lang/${lang[1]}.min.js`;
+                const url = `./scripts/external/highlight-lang/${lang[1]}.min.js`;
                 await this._appendJavaScriptFilesAsync(url);
                 console.log(`load: ${url}`);
             }
