@@ -85,7 +85,6 @@
 
         async function setupSlideShow(dom_slideshow_container, target, initial_page_number) {
             const dom_note_preview = document.querySelector(".note-preview");
-            dom_note_preview.innerHTML = "";
             const afterShowPageCallback = (page_number, dom_current_page) => {
                 const notes = dom_current_page.querySelectorAll(".note");
                 let note_html = "";
@@ -100,7 +99,6 @@
             }
 
             const slideshow = new SlideJSSlideShow(dom_slideshow_container, target, initial_page_number, afterShowPageCallback);
-            dom_slideshow_container.innerHTML = "";
             await slideshow.buildAsync();
             
             /* Execute once after build slides */
@@ -108,7 +106,6 @@
             hljs.highlightAll();
 
             const dom_thumbnails = document.querySelector(".thumbnails");
-            dom_thumbnails.innerHTML = "";
             const thumbnails = slideshow.generateThumbnails();
             for (let dom_thumb_page of thumbnails) {
                 const page_number = parseInt(dom_thumb_page.getAttribute("data-page-number"));
@@ -134,6 +131,21 @@
 
         let local_files = {};
 
+        function resetSlideshow() {
+            const dom_metas = document.head.querySelectorAll("meta.slidejs-meta");
+            for (const dom_meta of dom_metas) {
+                dom_meta.remove();
+            }
+            const dom_thumbnails = document.querySelector(".thumbnails");
+            dom_thumbnails.innerHTML = "";
+            
+            const dom_note_preview = document.querySelector(".note-preview");
+            dom_note_preview.innerHTML = "";
+            
+            const dom_slideshow_container = document.querySelector(".main-slide");
+            dom_slideshow_container.innerHTML = "";
+        }
+
         window.addEventListener("load", async () => {
             const dom_slideshow_container = document.querySelector(".main-slide");
             const url = new URL(window.location.href);
@@ -141,6 +153,7 @@
             const initial_page_number = param_p ? parseInt(param_p) : 1;
             const param_md = url.searchParams.get("md");
             if (param_md) {
+                resetSlideshow();
                 await setupSlideShow(dom_slideshow_container, param_md, initial_page_number);
             }
             
@@ -171,6 +184,7 @@
                 const url = new URL(window.location);
                 url.searchParams.delete("md")
                 window.history.replaceState(null, "", url.toString());
+                resetSlideshow();
                 await setupSlideShow(dom_slideshow_container, { main: local_files[dom_entrys.value], wokingdir: wokingdir, files: local_files }, 1);
             };
             document.querySelector(".button-cancel-selected-markdown").onclick = async (event) => {

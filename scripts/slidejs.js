@@ -111,6 +111,7 @@
                 md = token.text.match(/\s*page\s+(.+)\s*/);
                 if (md) {
                     const dom = document.createElement("meta");
+                    dom.classList.add("slidejs-meta");
                     dom.classList.add("page-add-class");
                     dom.setAttribute("page-number", context.variables["page_number"]);
                     dom.setAttribute("add-class", md[1]);
@@ -120,6 +121,7 @@
                 md = token.text.match(/\s*global\s+(.+)\s*/);
                 if (md) {
                     const dom = document.createElement("meta");
+                    dom.classList.add("slidejs-meta");
                     dom.classList.add("global-add-class");
                     dom.setAttribute("add-class", md[1]);
                     document.head.appendChild(dom);
@@ -128,6 +130,7 @@
                 md = token.text.match(/\s*!([\s\S]+)\s*/);
                 if (md && md[1] === "cover") {
                     const dom = document.createElement("meta");
+                    dom.classList.add("slidejs-meta");
                     dom.classList.add("page-style");
                     dom.setAttribute("page-number", context.variables["page_number"]);
                     dom.setAttribute("style", "cover");
