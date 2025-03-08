@@ -405,14 +405,15 @@ class SlideJSSlideShow {
         this.dom_container = dom_container;
         this.target = target;
         this.current_page_number = initial_page_number;
-        this.dom_current_page = null;
-        this.all_dom_pages = [];
-        this.is_active = false;
         this.afterShowPagecallback = afterShowPagecallback;
         this.is_local = target.main ? true : false;
     }
     
     async buildAsync() {
+        this.dom_current_page = null;
+        this.all_dom_pages = [];
+        this.is_active = false;
+        
         const slidejs = new SlideJS();
         await slidejs.buildAsync(this.target, this.dom_container);
         this.all_dom_pages = this.dom_container.querySelectorAll("section");
