@@ -100,6 +100,7 @@
             }
 
             const slideshow = new SlideJSSlideShow(dom_slideshow_container, target, initial_page_number, afterShowPageCallback);
+            dom_slideshow_container.innerHTML = "";
             await slideshow.buildAsync();
             
             /* Execute once after build slides */
