@@ -98,7 +98,7 @@
                 selectThumbnail(page_number);
             }
 
-            const slideshow = new SlideJSSlideShow(dom_slideshow_container, target, initial_page_number, afterShowPageCallback);
+            slideshow = new SlideJSSlideShow(dom_slideshow_container, target, initial_page_number, afterShowPageCallback);
             await slideshow.buildAsync();
             
             /* Execute once after build slides */
@@ -130,6 +130,7 @@
         }
 
         let local_files = {};
+        let slideshow = null;
 
         function resetSlideshow() {
             const dom_metas = document.head.querySelectorAll("meta.slidejs-meta");
@@ -144,6 +145,8 @@
             
             const dom_slideshow_container = document.querySelector(".main-slide");
             dom_slideshow_container.innerHTML = "";
+
+            if (slideshow) { slideshow.deactivate(); }
         }
 
         window.addEventListener("load", async () => {
