@@ -1,5 +1,6 @@
 
-[Demo](https://kjmtks.github.io/md-slide-js/slideshow.html?md=https://kjmtks.github.io/md-slide-js/slides/manual.md)
+* [Demo](https://kjmtks.github.io/md-slide-js/slideshow.html?md=https://kjmtks.github.io/md-slide-js/slides/manual.md)
+
 
 ## Dependencies
 
@@ -10,6 +11,7 @@ This project includes the following open-source software:
 | [highlight.js](https://github.com/highlightjs/highlight.js) | Syntax highlighting | BSD 3-Clause License |
 | [marked.js](https://github.com/markedjs/marked) | Markdown parsing | MIT License |
 | [MathJax](https://github.com/mathjax/MathJax) | Math rendering | Apache License 2.0 |
+| [Font Awesome](https://fontawesome.com/) | Icons | CC BY 4.0 License |
 
 Each library is used under its respective license. The full license texts are included in the `licenses/` directory.
 

@@ -331,7 +331,7 @@ section {
     z-index: 9999;
 }
 
-.dashboard {
+.slideshow-page {
     display: flex;
     flex-direction: row;
     width: 100vw;
@@ -345,10 +345,66 @@ section {
     height: 100%;
 }
 .menu {
+    background-color: orange;
+    padding: 0.5em 1em;
+    display: flex;
+    flex-direction: row;
+}
+.menu-item {
+    cursor: pointer;
+}
+.menu-item:hover {
+    filter: invert(1);
+}
+.menu-item:not(:first-child) {
+    margin-left: 1em;
+}
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     background-color: white;
-    height: auto;
-    flex-grow: 1;
-    max-height: 100vh;
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+select:hover {
+    border-color: #888;
+}
+select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button.cancel {
+    background-color: crimson;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:active {
+    background-color: #003f80;
+}
+
+
+.fontawesome-icon {
+    height: 1em;
+    width: auto;
+    vertical-align: middle;
 }
 .thumbnails {
     display: flex;

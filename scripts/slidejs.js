@@ -1,17 +1,24 @@
 ﻿class SlideJS {
-    async buildAsync(markdown_path, dom, remove_hide_page = true) {
-        this.variables = {
-            "page_number": 1,
-         };
-        const res_md = await fetch(markdown_path);
-        const content = await res_md.text();
+    async buildAsync(target, dom, remove_hide_page = true) {
+        this.context = {
+            variables: { "page_number": 1, },
+            is_local: target.main ? true : false,
+        };
 
-        let markdown_dir = "";
-        try {
-            const url = new URL(markdown_path);
-            markdown_dir = url.origin + url.pathname.substring(0, url.pathname.lastIndexOf("/") + 1);
-        } catch (e) {
-            markdown_dir = markdown_path.replace(/\/[^/]*$/, "/");
+        const res_md = this.context.is_local ? await fetch(URL.createObjectURL(target.main)) : await fetch(target);
+        const content = await res_md.text();
+        if (this.context.is_local) {
+            this.context.local_files = target.files;
+            this.context.wokingdir = target.wokingdir;
+        } else {
+            let markdown_dir = target;
+            try {
+                const url = new URL(target);
+                markdown_dir = url.origin + url.pathname.substring(0, url.pathname.lastIndexOf("/") + 1);
+            } catch (e) {
+                markdown_dir = target.replace(/\/[^/]*$/, "/");
+            }
+            this.context.markdown_dir = markdown_dir;
         }
 
         marked.use({
@@ -19,15 +26,15 @@
             gfm: true,
             async: true,
             extensions: [
-                this.metaTokenizer(this.variables),
-                this.referenceVariableTokenizer(this.variables),
-                this.noteTokenizer(),
-                this.inlineMathTokenizer(),
-                this.displayMathTokenizer(),
-                this.multiColumnTokenizer()
+                this.metaTokenizer(this.context),
+                this.referenceVariableTokenizer(this.context),
+                this.noteTokenizer(this.context),
+                this.inlineMathTokenizer(this.context),
+                this.displayMathTokenizer(this.context),
+                this.multiColumnTokenizer(this.context)
             ],
-            walkTokens : this.slidejsWalkTokens(),
-            renderer: this.slidejsRenderer(this.variables, markdown_dir)
+            walkTokens : this.slidejsWalkTokens(this.context),
+            renderer: this.slidejsRenderer(this.context)
         });
         dom.innerHTML = `<section data-style="content">${await marked.parse(content)}</section>`;
         const slidejs_id = Math.random();
@@ -77,7 +84,7 @@
         }
     }
 
-    metaTokenizer(variables) {
+    metaTokenizer(context) {
         return {
             name: "meta",
             level: "block",
@@ -97,7 +104,7 @@
             renderer(token) {
                 let md = token.text.match(/\s*([^\=\s]+)\s*\=\s*([^\=]+)\s*/);
                 if (md) {
-                    variables[md[1]] = md[2];
+                    context.variables[md[1]] = md[2];
                     return "";
                 }
 
@@ -105,7 +112,7 @@
                 if (md) {
                     const dom = document.createElement("meta");
                     dom.classList.add("page-add-class");
-                    dom.setAttribute("page-number", variables["page_number"]);
+                    dom.setAttribute("page-number", context.variables["page_number"]);
                     dom.setAttribute("add-class", md[1]);
                     document.head.appendChild(dom);
                 }
@@ -122,24 +129,24 @@
                 if (md && md[1] === "cover") {
                     const dom = document.createElement("meta");
                     dom.classList.add("page-style");
-                    dom.setAttribute("page-number", variables["page_number"]);
+                    dom.setAttribute("page-number", context.variables["page_number"]);
                     dom.setAttribute("style", "cover");
                     document.head.appendChild(dom);
                     let html = "";
-                    if (variables["title"]) {
-                        html = html + `<div class="title">${variables["title"]}</div>`;
+                    if (context.variables["title"]) {
+                        html = html + `<div class="title">${context.variables["title"]}</div>`;
                     }
-                    if (variables["subtitle"]) {
-                        html = html + `<div class="subtitle">${variables["subtitle"]}</div>`;
+                    if (context.variables["subtitle"]) {
+                        html = html + `<div class="subtitle">${context.variables["subtitle"]}</div>`;
                     }
-                    if (variables["presenter"]) {
-                        html = html + `<div class="presenter">${variables["presenter"]}</div>`;
+                    if (context.variables["presenter"]) {
+                        html = html + `<div class="presenter">${context.variables["presenter"]}</div>`;
                     }
-                    if (variables["contact"]) {
-                        html = html + `<div class="contact">${variables["contact"]}</div>`;
+                    if (context.variables["contact"]) {
+                        html = html + `<div class="contact">${context.variables["contact"]}</div>`;
                     }
-                    if (variables["affiliation"]) {
-                        html = html + `<div class="affiliation">${variables["affiliation"]}</div>`;
+                    if (context.variables["affiliation"]) {
+                        html = html + `<div class="affiliation">${context.variables["affiliation"]}</div>`;
                     }
                     return html;
                 }
@@ -149,7 +156,7 @@
         };
     }
     
-    referenceVariableTokenizer(variables) {
+    referenceVariableTokenizer(context) {
         return {
             name: "reference-variable",
             level: "inline",
@@ -167,12 +174,12 @@
                 return false;
             },
             renderer(token) {
-                return variables[token.text]
+                return context.variables[token.text]
             }
         };
     }
     
-    noteTokenizer() {
+    noteTokenizer(context) {
         return {
             name: "note",
             level: "block",
@@ -195,7 +202,7 @@
         };
     }
 
-    multiColumnTokenizer() {
+    multiColumnTokenizer(context) {
         return {
             name: "multi_column",
             level: "block",
@@ -225,7 +232,7 @@
         };
     }
 
-    inlineMathTokenizer() {
+    inlineMathTokenizer(context) {
         return {
             name: "inline_math",
             level: "inline",
@@ -248,7 +255,7 @@
         };
     }
 
-    displayMathTokenizer() {
+    displayMathTokenizer(context) {
         return {
             name: "display_math",
             level: "block",
@@ -271,10 +278,10 @@
         };
     }
 
-    slidejsRenderer(variables, markdown_dir) {
+    slidejsRenderer(context) {
         return {
             hr(hr) {
-                variables["page_number"] = variables["page_number"] + 1
+                context.variables["page_number"] = context.variables["page_number"] + 1
                 return `</section><section data-style="content">`;
             },
             heading(heading) {
@@ -292,7 +299,14 @@
                 if (/^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i.test(image.href)) {
                     src = image.href;
                 } else {
-                    src = markdown_dir + image.href;
+                    if (context.is_local) {
+                        const dummy_path = context.wokingdir ? `${context.wokingdir}/${image.href}` : image.href;
+                        const dummy_url = new URL(dummy_path, "file://");
+                        const path = dummy_url.pathname.replace(/^\/+/, "");
+                        src = URL.createObjectURL(context.local_files[path]);
+                    } else {
+                        src = context.markdown_dir + image.href;
+                    }
                 }
                 if (image.text) {
                     return `<figure><img src="${src}" alt=${image.text}><figcaption>${image.text}</figcaption></figure>`;
@@ -341,7 +355,7 @@
         };
     }
 
-    slidejsWalkTokens() {
+    slidejsWalkTokens(context) {
         return async (token) => {
             if (token instanceof Array) {
                 for (let t of token) { await this._checkCodeLangAsync(t); }
@@ -387,19 +401,20 @@
 }
 
 class SlideJSSlideShow {
-    constructor(dom_container, md_path, initial_page_number, afterShowPagecallback = null) {
+    constructor(dom_container, target, initial_page_number, afterShowPagecallback = null) {
         this.dom_container = dom_container;
-        this.md_path = md_path;
+        this.target = target;
         this.current_page_number = initial_page_number;
         this.dom_current_page = null;
         this.all_dom_pages = [];
         this.is_active = false;
         this.afterShowPagecallback = afterShowPagecallback;
+        this.is_local = target.main ? true : false;
     }
     
     async buildAsync() {
         const slidejs = new SlideJS();
-        await slidejs.buildAsync(this.md_path, this.dom_container);
+        await slidejs.buildAsync(this.target, this.dom_container);
         this.all_dom_pages = this.dom_container.querySelectorAll("section");
         this.showPage(this.current_page_number);
 
