@@ -16,7 +16,7 @@
 # Grammer
 ## Page separation
 * 水平ライン `---` でページを区切る
-* Marp では heading 1 (`#`) でもページが区切られているのが，本システムでは heading 1 では区切らない
+* Marp では heading 1 (`#`) でもページが区切られるが，本システムでは heading 1 では区切らない
 
 ---
 ## Multi-column Layout
