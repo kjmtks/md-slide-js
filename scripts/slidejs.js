@@ -382,8 +382,12 @@
             let lang = token.lang.match(/^([^:]+)/);
             if (lang && !hljs.listLanguages().includes(lang[1])) {
                 const url = `./scripts/external/highlight-lang/${lang[1]}.min.js`;
-                await this._appendJavaScriptFilesAsync(url);
-                console.log(`load: ${url}`);
+                try {
+                    await this._appendJavaScriptFilesAsync(url);
+                    console.log(`load: ${url}`);
+                } catch (e) {
+                    console.log(`Can't load: ${url}`);
+                }
             }
         }
     }
@@ -399,11 +403,12 @@
 
     async _appendJavaScriptFilesAsync(...urls) {
         for (let url of urls) {
-            const promise = new Promise((resolve, _) => {
+            const promise = new Promise((resolve, reject) => {
                 const script = document.createElement("script");
                 script.src = url;
                 script.async = true;
                 script.onload = () => { resolve(); };
+                script.onerror = (e) => { reject(e); };
                 document.head.appendChild(script);
             })
             await promise;
