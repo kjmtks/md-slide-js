@@ -74,27 +74,40 @@
             }
         }
 
-        // Replace local file path
-        const replace_local_file_path = (dom, attr_name, context) => {
-            const raw_src = dom.getAttribute(attr_name);
-            const is_fullurl = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i.test(raw_src);
+        const get_actual_path = (raw_path, context) => {
+            const is_fullurl = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i.test(raw_path);
             if (!is_fullurl) {
                 if (context.is_local) {
-                    const dummy_path = context.wokingdir ? `${context.wokingdir}/${raw_src}` : raw_src;
+                    const dummy_path = context.wokingdir ? `${context.wokingdir}/${raw_path}` : raw_path;
                     const dummy_url = new URL(dummy_path, "file://");
                     const path = dummy_url.pathname.replace(/^\/+/, "");
-                    dom.setAttribute(attr_name, URL.createObjectURL(context.local_files[path]));
+                    return URL.createObjectURL(context.local_files[path]);
                 } else {
-                    dom.setAttribute(attr_name, context.markdown_dir + raw_src);
+                    return context.markdown_dir + path;
                 }
             }
-        }
+        };
+
+        // Replace local file path
         document.querySelectorAll(`section img, section iframe, section video`).forEach(dom => {
-            replace_local_file_path(dom, "src", this.context);
+            const raw_path = dom.getAttribute("src");
+            const path = get_actual_path(raw_path, this.context);
+            dom.setAttribute("src", path);
         });
         document.querySelectorAll(`section video`).forEach(dom => {
-            replace_local_file_path(dom, "poster", this.context);
+            const raw_path = dom.getAttribute("poster");
+            const path = get_actual_path(raw_path, this.context);
+            dom.setAttribute("poster", path);
         });
+
+        // Import css
+        const import_css_metas = document.querySelectorAll("meta.import-css");
+        import_css_metas.forEach(meta => {
+            const raw_path = meta.getAttribute("data-file");
+            const path = get_actual_path(raw_path, this.context);
+            this._appendStyleSheetFiles(path);
+        });
+
 
         // Page
         const sections = document.querySelectorAll("section");
@@ -128,6 +141,15 @@
                 if (md) {
                     context.variables[md[1]] = md[2];
                     return "";
+                }
+
+                md = token.text.match(/\s*css\s+(.+)\s*/);
+                if (md) {
+                    const dom = document.createElement("meta");
+                    dom.classList.add("slidejs-meta");
+                    dom.classList.add("import-css");
+                    dom.setAttribute("data-file", md[1]);
+                    document.head.appendChild(dom);
                 }
 
                 md = token.text.match(/\s*page\s+(.+)\s*/);

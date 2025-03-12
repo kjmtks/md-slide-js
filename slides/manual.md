@@ -1,4 +1,5 @@
-﻿[: presenter = Takeshi Kojima :]
+﻿[: css mint.css :]
+[: presenter = Takeshi Kojima :]
 [: contact = kojima@tokushima-u.ac.jp :]
 [: affiliation = Tokushima University :]
 [: title = Create slides using Markdown and slideshow in web browser :]
@@ -148,6 +149,15 @@ print("Hello")
 ```
 
 * YouTube の動画埋め込みも可能．ただし，サイズは調整した方がよい
+
+---
+## CSSの読み込み
+
+* デザインを調整したい場合などに
+
+```
+[: css mint.css :]
+```
 
 ---
 # Shortcut key
