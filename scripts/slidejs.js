@@ -74,6 +74,28 @@
             }
         }
 
+        // Replace local file path
+        const replace_local_file_path = (dom, attr_name, context) => {
+            const raw_src = dom.getAttribute(attr_name);
+            const is_fullurl = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i.test(raw_src);
+            if (!is_fullurl) {
+                if (context.is_local) {
+                    const dummy_path = context.wokingdir ? `${context.wokingdir}/${image.href}` : raw_src;
+                    const dummy_url = new URL(dummy_path, "file://");
+                    const path = dummy_url.pathname.replace(/^\/+/, "");
+                    dom.setAttribute(attr_name, URL.createObjectURL(context.local_files[path]));
+                } else {
+                    dom.setAttribute(attr_name, context.markdown_dir + raw_src);
+                }
+            }
+        }
+        document.querySelectorAll(`section img, section iframe, section video`).forEach(dom => {
+            replace_local_file_path(dom, "src", this.context);
+        });
+        document.querySelectorAll(`section video`).forEach(dom => {
+            replace_local_file_path(dom, "poster", this.context);
+        });
+
         // Page
         const sections = document.querySelectorAll("section");
         for (let [index, section] of sections.entries()) {
@@ -298,23 +320,10 @@
                 return `<div class="heading${heading.depth}">${this.parser.parseInline(heading.tokens)}</div>`;
             },
             image(image) {
-                let src = "";
-                if (/^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i.test(image.href)) {
-                    src = image.href;
-                } else {
-                    if (context.is_local) {
-                        const dummy_path = context.wokingdir ? `${context.wokingdir}/${image.href}` : image.href;
-                        const dummy_url = new URL(dummy_path, "file://");
-                        const path = dummy_url.pathname.replace(/^\/+/, "");
-                        src = URL.createObjectURL(context.local_files[path]);
-                    } else {
-                        src = context.markdown_dir + image.href;
-                    }
-                }
                 if (image.text) {
-                    return `<figure><img src="${src}" alt=${image.text}><figcaption>${image.text}</figcaption></figure>`;
+                    return `<figure><img src="${image.href}" alt=${image.text}><figcaption>${image.text}</figcaption></figure>`;
                 } else {
-                    return `<figure><img src="${src}" alt=${image.text}></figure>`;
+                    return `<figure><img src="${image.href}" alt=${image.text}></figure>`;
                 }
             },
             table(table) {

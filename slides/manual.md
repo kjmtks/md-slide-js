@@ -126,8 +126,34 @@ print("Hello")
 [:: myvar ::]
 ```
 
+
+---
+## 動画の埋め込み
+
+* 専用の構文はない
+* `video` タグで直接書けば動画を埋め込むことができる
+
+```xml
+&lt;video
+  src="movie.mp4"           <!-- 動画ファイル -->
+  poster="thumbnail.png"    <!-- サムネイル画像ファイル -->
+  controls                  <!-- そのほかの属性は必要に応じて -->
+  autoplay
+  muted
+  loop
+  width="auto"
+  height="90%"
+  preload="metadata"&gt;
+&lt;/video&gt;
+```
+
+* YouTube の動画埋め込みも可能．ただし，サイズは調整した方がよい
+
 ---
 # Shortcut key
 
 * `f`: スライドショー（フルスクリーンモード）の開始
 * `c`: 発表者ノートの表示と非表示の切り換え
+
+---
+# おわり
