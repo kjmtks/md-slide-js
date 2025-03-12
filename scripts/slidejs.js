@@ -5,6 +5,10 @@
             is_local: target.main ? true : false,
         };
 
+        document.querySelectorAll("link[data-dynamically=\"true\"]").forEach(dom => {
+            dom.remove();
+        })
+
         const res_md = this.context.is_local ? await fetch(URL.createObjectURL(target.main)) : await fetch(target);
         const content = await res_md.text();
         if (this.context.is_local) {
@@ -419,6 +423,7 @@
             const style = document.createElement("link");
             style.rel = "stylesheet";
             style.href = url;
+            style.setAttribute("data-dynamically", "true");
             document.head.appendChild(style);
         });
     }
@@ -431,6 +436,7 @@
                 script.async = true;
                 script.onload = () => { resolve(); };
                 script.onerror = (e) => { reject(e); };
+                script.setAttribute("data-dynamically", "true");
                 document.head.appendChild(script);
             })
             await promise;
