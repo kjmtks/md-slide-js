@@ -135,9 +135,9 @@ print("Hello")
 
 ```xml
 &lt;video
-  src="movie.mp4"           <!-- 動画ファイル -->
-  poster="thumbnail.png"    <!-- サムネイル画像ファイル -->
-  controls                  <!-- そのほかの属性は必要に応じて -->
+  src="movie.mp4"
+  poster="thumbnail.png"
+  controls
   autoplay
   muted
   loop
