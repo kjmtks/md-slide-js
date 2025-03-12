@@ -80,7 +80,7 @@
             const is_fullurl = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i.test(raw_src);
             if (!is_fullurl) {
                 if (context.is_local) {
-                    const dummy_path = context.wokingdir ? `${context.wokingdir}/${image.href}` : raw_src;
+                    const dummy_path = context.wokingdir ? `${context.wokingdir}/${raw_src}` : raw_src;
                     const dummy_url = new URL(dummy_path, "file://");
                     const path = dummy_url.pathname.replace(/^\/+/, "");
                     dom.setAttribute(attr_name, URL.createObjectURL(context.local_files[path]));
