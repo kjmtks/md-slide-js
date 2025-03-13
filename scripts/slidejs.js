@@ -87,7 +87,7 @@
                     const path = dummy_url.pathname.replace(/^\/+/, "");
                     return URL.createObjectURL(context.local_files[path]);
                 } else {
-                    return context.markdown_dir + path;
+                    return context.markdown_dir + raw_path;
                 }
             }
         };
