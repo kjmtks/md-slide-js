@@ -304,7 +304,7 @@
                 const match = html.raw.match(/<!--\s*@(.+?):\s*(.+?)\s*-->\s*$/);
                 if (match) {
                     if (match[1] === "caption") {
-                        this.lastTableCaption = match[2];
+                        this.caption = match[2];
                         return "";
                     }
                     if (match[1] === "multicolumn") {
@@ -314,7 +314,6 @@
                     }
                     if (match[1] === "image-style") {
                         this.imageStyle = match[2];
-                        console.log(this.imageStyle)
                         return "";
                     }
                 }
@@ -355,15 +354,19 @@
                 return `<div class="heading${heading.depth}">${this.parser.parseInline(heading.tokens)}</div>`;
             },
             image(image) {
-                if (image.text) {
-                    return `<figure><img src="${image.href}" style="${this.imageStyle ?? ""}" alt=${image.text}><figcaption>${image.text}</figcaption></figure>`;
-                } else {
-                    return `<figure><img src="${image.href}" style="${this.imageStyle ?? ""}" alt=${image.text}></figure>`;
+                const caption = image.text ? image.text : this.caption;
+                this.caption = null;
+                let html = `<figure>`;
+                html = html + (this.imageStyle ? `<img src="${image.href}" style="${this.imageStyle}" />` : `<img src="${image.href}" />`);
+                if (caption) {
+                    html = html + `<figcaption>${caption}</figcaption>`;
                 }
+                html = html + `</figure>`;
+                return html;
             },
             table(table) {
-                const caption = this.lastTableCaption;
-                this.lastTableCaption = "";
+                const caption = this.caption;
+                this.caption = null;
                 let html = caption ? `<figure><figcaption>${caption}</figcaption>` : "<figure>";
                 const header_html = table.header.map(th => this.parser.parseInline(th.tokens)).join("</th><th>")
                 html = html + `<table><thead><tr><th>${header_html}</th></tr></thead><tbody>`;
