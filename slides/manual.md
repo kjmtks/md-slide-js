@@ -25,27 +25,27 @@
 * 段組は以下のような記法で記述できる
 
 ```
-[[[
+&lt;!-- @multicolumn: 1:1:1 --&gt;
 1st
-||
+&lt;!-- @nextcolumn --&gt;
 2nd
-||
+&lt;!-- @nextcolumn --&gt;
 3rd
-]]]
+&lt;!-- @endmulticolumn --&gt;
 ```
 
 * 以下のように表示される
-
-[[[
+<!-- @multicolumn: 1:1:1 -->
 1st
-||
+<!-- @nextcolumn -->
 2nd
-||
+<!-- @nextcolumn -->
 3rd
-]]]
+<!-- @endmulticolumn -->
 
 
 * 列数に制限はない
+* `1:1:1` のところで各列の横幅の比率を指定する
 
 ---
 [: page hide :]
@@ -56,43 +56,44 @@
 ## Code
 * `highlight.js` によりコードのハイライトができる
 
-[[[
+<!-- @multicolumn: 1:1 -->
 ```python:Python
 print("Hello")
 ```
-||
+<!-- @nextcolumn -->
 ```latex:LaTeX
 \frac{dx}{dt} = x(x-1)
 ```
-]]]
+<!-- @endmulticolumn -->
 
 ---
 ## Figures and Tables
 * キャプション付きの図表を簡潔に記述できる
 
-[[[
+<!-- @multicolumn: 1:1 -->
 ### Figure
+<!-- @image-style: width: 600px -->
 ![Figure 1: foo](logo.svg)
-||
+<!-- @nextcolumn -->
 ### Table
-*caption: Table1: bar*
+<!-- @caption: Table1: bar -->
 | aaaa | b| a | b| a | b| a | b| a | b|
 |---|--|---|--|---|--|---|--|---|--|
 | a | b| a | b| a | b| a | b| a | b|
 | aaaa | baaa| a | b| a | b| a | b| a | b|
 | a | b| a | b| a | b| a | b| a | b|
 | a | b| a | b| a | b| a | b| a | b|
-]]]
+<!-- @endmulticolumn -->
 
 ---
 ## Mathematical Expressions
 * インライン形式とディスプレイ形式の両方に対応
 
-[[[
+<!-- @multicolumn: 1:1 -->
 ### Inline math
 * Enclosing with `\\( ・ \\)` renders inline math: \\(x = \frac{1}{2}\\)
 * Also, enclosing with `\( ・ \)` renders inline math: \(f(x, y, z(t))\)
-||
+<!-- @nextcolumn -->
 ### display math
 * Enclosing with `\\[ ・ \\]` renders display math:
 \\[
@@ -102,8 +103,9 @@ print("Hello")
 \[
 \frac{1}{2}[1]
 \]
-]]]
+<!-- @endmulticolumn -->
 
+---
 ## Text Formatting and Decoration
 * Link: [This is a link](https://kjmtks.github.io/md-slide-js).
 * Emphasis: *This is a emphasized text*.
@@ -163,7 +165,7 @@ print("Hello")
 # Shortcut key
 
 * `f`: スライドショー（フルスクリーンモード）の開始
-* `c`: 発表者ノートの表示と非表示の切り換え
+  * `b`: ポインタの表示/非表示の切り換え（フルスクリーンモードのみ有効）
 
 ---
 # おわり

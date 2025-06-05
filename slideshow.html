@@ -18,6 +18,9 @@
     <script lang="javascript"src="./scripts/external/mathjax-tex-svg.js" async="true"></script>
     <script lang="javascript" src="./scripts/slidejs.js"></script>
 
+    <template id="tmp-presentor-tool">
+        <div></div>
+    </template>
 </head>
 
 <body>
@@ -41,6 +44,9 @@
                 <div class="menu-item button-start-fullscreen">
                     <img class="fontawesome-icon" src="fontawesome-icons/display-solid.svg" />
                 </div>
+                <div class="menu-item button-open-screen-window">
+                    <img class="fontawesome-icon" src="fontawesome-icons/window-restore-regular.svg" />
+                </div>
                 <div class="menu-item button-start-print">
                     <img class="fontawesome-icon" src="fontawesome-icons/print-solid.svg" />
                 </div>
@@ -55,6 +61,28 @@
     </div>
 
     <script lang="javascript">
+
+        var  note_window = null;
+        const channel = new BroadcastChannel('slidejs-presenter-note');
+
+        channel.addEventListener("message", (event) => {
+            const message = event.data;
+            if (message.type === 'go_next') {
+                slideshow.goNextPage()
+            }
+            if (message.type === 'go_back') {
+                slideshow.goBackPage()
+            }
+            if (message.type === 'toggle_pointer') {
+                slideshow.togglePointer()
+            }
+            if (message.type === 'request_note') {
+                channel.postMessage({type: 'note', html: document.querySelector(".note-preview").innerHTML});
+            }
+            if (message.type === 'request_slide') {
+                channel.postMessage({type: 'slide', html: document.querySelector(".main-slide>.show").cloneNode(true).outerHTML});
+            }
+        });
 
         function selectThumbnail(page_number) {
             const dom_thumbnails = document.querySelector(".thumbnails");
@@ -73,23 +101,18 @@
             if (slideshow) {
                 document.querySelector(".menu-item.button-start-fullscreen")?.classList.add("show");
                 document.querySelector(".menu-item.button-start-print")?.classList.add("show");
-                document.querySelector(".menu-item.button-toggle-note")?.classList.add("show");
+                document.querySelector(".menu-item.button-open-screen-window")?.classList.add("show");
+                // document.querySelector(".menu-item.button-toggle-note")?.classList.add("show");
             }
         }
 
         function toggleNote() {
             if (document.querySelector(".note-preview").classList.contains("show")) {
-                    document.querySelector(".note-preview").classList.remove("show")
-                } else {
-                    document.querySelector(".note-preview").classList.add("show")
-                }
-        }
-
-        window.addEventListener("keydown", async (event) => {
-            if (event.key === "c") {
-                toggleNote();
+                document.querySelector(".note-preview").classList.remove("show")
+            } else {
+                document.querySelector(".note-preview").classList.add("show")
             }
-        });
+        }
 
         async function _loadFileRecursive(entry, callback=null, path=[], files={}) {
             if (entry.name[0] === ".") { return files; }
@@ -117,6 +140,8 @@
                 url.searchParams.set("p", page_number);
                 window.history.replaceState(null, "", url.toString());
                 selectThumbnail(page_number);
+                channel.postMessage({type: 'note', html: document.querySelector(".note-preview").innerHTML});
+                channel.postMessage({type: 'slide', html: document.querySelector(".main-slide>.show").cloneNode(true).outerHTML});
             }
 
             slideshow = new SlideJSSlideShow(dom_slideshow_container, target, initial_page_number, afterShowPageCallback);
@@ -221,6 +246,14 @@
             };
             document.querySelector(".button-start-print").onclick = async (event) => {
                 printSlides()
+            };
+            document.querySelector(".button-open-screen-window").onclick = async (event) => {
+                if (note_window && !note_window.closed) {
+                    note_window.close();
+                    note_window = null;
+                } else {
+                    note_window = window.open(`./note.html${window.location.search}`, "_blank", 1);
+                }
             };
             document.querySelector(".button-toggle-note").onclick = async (event) => {
                 toggleNote();

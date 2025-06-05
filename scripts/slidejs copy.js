@@ -34,7 +34,8 @@
                 this.referenceVariableTokenizer(this.context),
                 this.noteTokenizer(this.context),
                 this.inlineMathTokenizer(this.context),
-                this.displayMathTokenizer(this.context)
+                this.displayMathTokenizer(this.context),
+                this.multiColumnTokenizer(this.context)
             ],
             walkTokens : this.slidejsWalkTokens(this.context),
             renderer: this.slidejsRenderer(this.context)
@@ -252,6 +253,37 @@
         };
     }
 
+    multiColumnTokenizer(context) {
+        return {
+            name: "multi_column",
+            level: "block",
+            start(src) { return src.indexOf("[[[")?.index; },
+            tokenizer(src) {
+                const match = /^\[\[\[\s*([\s\S]+?)\s*\]\]\]/.exec(src);
+                if (match) {
+                    // const b = /^([0-9]+):([0-9]+)/.exec(match[1])
+                    // console.log(b)
+                    const cols = match[1].split("||");
+                    return {
+                        type: 'multi_column',
+                        raw: match[0],
+                        text: cols.map(t => t.trim()).join(""),
+                        tokens: cols.map(t => this.lexer.blockTokens(t.trim()))
+                    };
+                }
+                return false;
+            },
+            renderer(token) {
+                let html = `<div class="multi-column">`;
+                token.tokens.forEach(t => {
+                    html = html + `<div class="column">${this.parser.parse(t)}</div>`
+                })
+                html = html + `</div>`;
+                return html;
+            }
+        };
+    }
+
     inlineMathTokenizer(context) {
         return {
             name: "inline_math",
@@ -300,49 +332,9 @@
 
     slidejsRenderer(context) {
         return {
-            html(html) {
-                const match = html.raw.match(/<!--\s*@(.+?):\s*(.+?)\s*-->\s*$/);
-                if (match) {
-                    if (match[1] === "caption") {
-                        this.lastTableCaption = match[2];
-                        return "";
-                    }
-                    if (match[1] === "multicolumn") {
-                        this.multicolumn = match[2].split(":").map(x => Number(x));
-                        this.columnIndex = 0;
-                        return `<div class="multi-column"><div class="column" style="flex: ${this.multicolumn[this.columnIndex]}">`;
-                    }
-                    if (match[1] === "image-style") {
-                        this.imageStyle = match[2];
-                        console.log(this.imageStyle)
-                        return "";
-                    }
-                }
-                const match1 = html.raw.match(/<!--\s*@(.+?)\s*-->\s*$/);
-                if (match1) {
-                    if (match1[1] === "nextcolumn") {
-                        this.columnIndex++;
-                        return `</div><div class="column" style="flex: ${this.multicolumn[this.columnIndex]}">`;
-                    }
-                    if (match1[1] === "endmulticolumn") {
-                        this.multicolumn = null;
-                        this.columnIndex = -1;
-                        return `</div></div>`;
-                    }
-                }
-                return html.raw;
-            },
             hr(hr) {
-                let retval = "";
-                if (this.multicolumn) {
-                    this.multicolumn = null;
-                    this.columnIndex = -1;
-                    retval = retval + `</div></div>`;
-                }
-
                 context.variables["page_number"] = context.variables["page_number"] + 1
-                retval = retval + `</section><section data-style="content">`;
-                return retval;
+                return `</section><section data-style="content">`;
             },
             heading(heading) {
                 if (heading.depth == 1) {
@@ -356,9 +348,9 @@
             },
             image(image) {
                 if (image.text) {
-                    return `<figure><img src="${image.href}" style="${this.imageStyle ?? ""}" alt=${image.text}><figcaption>${image.text}</figcaption></figure>`;
+                    return `<figure><img src="${image.href}" alt=${image.text}><figcaption>${image.text}</figcaption></figure>`;
                 } else {
-                    return `<figure><img src="${image.href}" style="${this.imageStyle ?? ""}" alt=${image.text}></figure>`;
+                    return `<figure><img src="${image.href}" alt=${image.text}></figure>`;
                 }
             },
             table(table) {
@@ -378,6 +370,11 @@
                 if (em.raw[0] === "_") {
                     return `<i>${this.parser.parseInline(em.tokens)}</i>`;
                 } else {
+                    const captionMatch = em.raw.match(/^\*caption:\s*([^\*]+)\*/);
+                    if (captionMatch) {
+                        this.lastTableCaption = captionMatch[1];
+                        return "";
+                    }
                     return `<em>${this.parser.parseInline(em.tokens)}</em>`;
                 }
             },
