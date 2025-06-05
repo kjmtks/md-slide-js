@@ -96,6 +96,14 @@
             if (message.type === 'slide') {
                 document.querySelector("#slide-preview").innerHTML = message.html;
             }
+            if (message.type === 'css') {
+                message.links.forEach(link => {
+                    const dom = document.createElement('link');
+                    dom.rel = 'stylesheet';
+                    dom.href = link;
+                    document.head.appendChild(dom);
+                });
+            }
         });
         function displayTime() {
             const now = new Date();
@@ -148,6 +156,7 @@
                 w.innerHTML = "00:00:00";
             });
 
+            channel.postMessage({type: 'request_css'});
             channel.postMessage({type: 'request_note'});
             channel.postMessage({type: 'request_slide'});
         });

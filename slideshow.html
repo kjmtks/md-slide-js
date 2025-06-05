@@ -76,6 +76,10 @@
             if (message.type === 'toggle_pointer') {
                 slideshow.togglePointer()
             }
+            if (message.type === 'request_css') {
+                const links = Array.from(document.querySelectorAll(`link[data-dynamically="true"]`)).map(x => x.href);
+                channel.postMessage({type: 'css', links: links});
+            }
             if (message.type === 'request_note') {
                 channel.postMessage({type: 'note', html: document.querySelector(".note-preview").innerHTML});
             }
@@ -254,6 +258,7 @@
                 } else {
                     note_window = window.open(`./note.html${window.location.search}`, "_blank", 1);
                 }
+                
             };
             document.querySelector(".button-toggle-note").onclick = async (event) => {
                 toggleNote();
