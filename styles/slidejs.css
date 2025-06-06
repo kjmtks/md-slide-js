@@ -324,6 +324,26 @@ section {
     margin: 0.5em 0 0 0;
 }
 
+
+
+.slidejs section[data-style="content"].no-content {
+    justify-content: center;
+}
+.slidejs section[data-style="content"].no-content .title {
+    display: inline-block;
+    text-align: center;
+    font-size: 3em;
+    margin: 0;
+    font-weight: bold;
+    background: none;
+}
+.slidejs section[data-style="content"].no-content .subtitle {
+    display: inline-block;
+    text-align: center;
+    border-left: none;
+}
+
+
 .slidejs section[data-style="content"] .title {
     background: linear-gradient(transparent 70%, lightgray 70%);
     margin-bottom: 0.5em;
