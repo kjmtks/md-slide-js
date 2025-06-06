@@ -29,7 +29,7 @@
             <option class="option-open-local-directory"></option>
         </select>
         <button class="button-open-selected-markdown">Open</button>
-        <button class="button-cancel-selected-markdown cancel">Cancel</button>
+        <button class="button-modal-cancel cancel">Cancel</button>
     </dialog>
 
     <div class="slideshow-page">
@@ -241,8 +241,8 @@
                 resetSlideshow();
                 await setupSlideShow(dom_slideshow_container, { main: local_files[dom_entrys.value], wokingdir: wokingdir, files: local_files }, 1);
             };
-            document.querySelector(".button-cancel-selected-markdown").onclick = async (event) => {
-                document.querySelector("#dialog-open-local").close();
+            document.querySelector(".button-modal-cancel").onclick = async (event) => {
+                document.querySelector("#dialog-open-local")?.close();
             };
 
             document.querySelector(".button-start-fullscreen").onclick = async (event) => {

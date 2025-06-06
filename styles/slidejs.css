@@ -220,11 +220,18 @@ section {
     padding: 0;
     font-size: 0.75em;
 }
-.slidejs section figure img {
+.slidejs section img {
     display: block;
     margin: 0 auto;
     max-width: 100%;
     max-height: 100%;
+}
+.slidejs section .figcaption {
+    display: block;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    font-size: 0.75em;
 }
 .slidejs section figure table {
     display: inline-table;

@@ -235,7 +235,7 @@
             level: "block",
             start(src) { return src.indexOf("<!--")?.index; },
             tokenizer(src) {
-                const match = /^\<\!\-\-\s*note:\s*([^(\-\-\>)]+?)\s*\-\-\>/.exec(src);
+                const match = /^\<\!\-\-\s*@note:\s*([^(\-\-\>)]+?)\s*\-\-\>/.exec(src);
                 if (match) {
                     return  {
                         type: 'note',
@@ -356,12 +356,10 @@
             image(image) {
                 const caption = image.text ? image.text : this.caption;
                 this.caption = null;
-                let html = `<figure>`;
-                html = html + (this.imageStyle ? `<img src="${image.href}" style="${this.imageStyle}" />` : `<img src="${image.href}" />`);
+                let html = this.imageStyle ? `<img src="${image.href}" style="${this.imageStyle}" />` : `<img src="${image.href}" />`;
                 if (caption) {
-                    html = html + `<figcaption>${caption}</figcaption>`;
+                    html = html + `<span class="figcaption">${caption}</span>`;
                 }
-                html = html + `</figure>`;
                 return html;
             },
             table(table) {
