@@ -1,0 +1,41 @@
+﻿
+/*
+ <span class="ribbon-text">New</span> のように使う
+*/
+section .ribbon-text {
+  background-color: white;
+  text-align: center;
+  transform: rotate(45deg);
+  font-size: 0.75em;
+  font-weight: bolder;
+  padding: 0.25em 0;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  border-radius: 0.5em;
+  color: black;
+  border: black 4px solid;
+}
+section .ribbon-text.red {
+  color: #D90000;
+  border: #D90000 4px solid;
+}
+section .ribbon-text.green {
+  color: #0E9700;
+  border: #0E9700 4px solid;
+}
+section .ribbon-text.blue {
+  color: #0066CC;
+  border: #0066CC 4px solid;
+}
+section .ribbon-text.magenta {
+  color: #8000B2;
+  border: #8000B2 4px solid;
+}
+section .ribbon-text.orange {
+  color: #E66A00;
+  border: #E66A00 4px solid;
+}
+section .ribbon-text.cyan {
+  color: #00B4D8;
+  border: #00B4D8 4px solid;
+}
