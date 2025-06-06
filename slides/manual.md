@@ -1,13 +1,16 @@
-﻿[: css mint.css :]
-[: presenter = Takeshi Kojima :]
-[: contact = kojima@tokushima-u.ac.jp :]
-[: affiliation = Tokushima University :]
-[: title = Create slides using Markdown and slideshow in web browser :]
-[: subtitle = md-slide.js :]
-[: date = 2025/3/6 :]
+﻿<!-- @css: mint.css -->
+<!-- @presenter: Takeshi Kojima -->
+<!-- @contact: kojima@tokushima-u.ac.jp -->
+<!-- @affiliation: Tokushima University -->
+<!-- @title: Create slides using Markdown and slideshow in web browser -->
+<!-- @subtitle: md-slide.js -->
+<!-- @date: 2025/3/6 -->
 
-[: !cover :]  <!-- 表紙を作成 -->
-[: page no-page-number :]  <!-- このページはページ番号を表示しない -->
+<!-- 表紙を生成 -->
+<!-- @cover -->
+
+<!-- このページはページ番号を表示しない -->
+<!-- @page: no-page-number -->
 
 <!-- @note: 
 このように書くと，発表者ノートになる．
@@ -121,6 +124,7 @@ print("Hello")
 ## Variables
 * 変数の代入と参照ができる
 * 変数の代入
+
 [: myvar = テスト :]
 ```
 [: myvar = テスト :]
@@ -159,7 +163,7 @@ print("Hello")
 * デザインを調整したい場合などに
 
 ```
-[: css mint.css :]
+&lt;!-- @css: mint.css --&gt;
 ```
 
 ---

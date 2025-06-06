@@ -145,62 +145,6 @@
                     context.variables[md[1]] = md[2];
                     return "";
                 }
-
-                md = token.text.match(/\s*css\s+(.+)\s*/);
-                if (md) {
-                    const dom = document.createElement("meta");
-                    dom.classList.add("slidejs-meta");
-                    dom.classList.add("import-css");
-                    dom.setAttribute("data-file", md[1]);
-                    document.head.appendChild(dom);
-                }
-
-                md = token.text.match(/\s*page\s+(.+)\s*/);
-                if (md) {
-                    const dom = document.createElement("meta");
-                    dom.classList.add("slidejs-meta");
-                    dom.classList.add("page-add-class");
-                    dom.setAttribute("page-number", context.variables["page_number"]);
-                    dom.setAttribute("add-class", md[1]);
-                    document.head.appendChild(dom);
-                }
-        
-                md = token.text.match(/\s*global\s+(.+)\s*/);
-                if (md) {
-                    const dom = document.createElement("meta");
-                    dom.classList.add("slidejs-meta");
-                    dom.classList.add("global-add-class");
-                    dom.setAttribute("add-class", md[1]);
-                    document.head.appendChild(dom);
-                }
-
-                md = token.text.match(/\s*!([\s\S]+)\s*/);
-                if (md && md[1] === "cover") {
-                    const dom = document.createElement("meta");
-                    dom.classList.add("slidejs-meta");
-                    dom.classList.add("page-style");
-                    dom.setAttribute("page-number", context.variables["page_number"]);
-                    dom.setAttribute("style", "cover");
-                    document.head.appendChild(dom);
-                    let html = "";
-                    if (context.variables["title"]) {
-                        html = html + `<div class="title">${context.variables["title"]}</div>`;
-                    }
-                    if (context.variables["subtitle"]) {
-                        html = html + `<div class="subtitle">${context.variables["subtitle"]}</div>`;
-                    }
-                    if (context.variables["presenter"]) {
-                        html = html + `<div class="presenter">${context.variables["presenter"]}</div>`;
-                    }
-                    if (context.variables["contact"]) {
-                        html = html + `<div class="contact">${context.variables["contact"]}</div>`;
-                    }
-                    if (context.variables["affiliation"]) {
-                        html = html + `<div class="affiliation">${context.variables["affiliation"]}</div>`;
-                    }
-                    return html;
-                }
-        
                 return "";
             }
         };
@@ -235,7 +179,7 @@
             level: "block",
             start(src) { return src.indexOf("<!--")?.index; },
             tokenizer(src) {
-                const match = /^\<\!\-\-\s*@note:\s*([^(\-\-\>)]+?)\s*\-\-\>/.exec(src);
+                const match = /^<!--\s*@note:\s*(.*?)\s*-->/.exec(src);
                 if (match) {
                     return  {
                         type: 'note',
@@ -316,6 +260,55 @@
                         this.imageStyle = match[2];
                         return "";
                     }
+                    if (match[1] === "presenter") {
+                        this.presenter = match[2];
+                        return "";
+                    }
+                    if (match[1] === "contact") {
+                        this.contact = match[2];
+                        return "";
+                    }
+                    if (match[1] === "affiliation") {
+                        this.affiliation = match[2];
+                        return "";
+                    }
+                    if (match[1] === "title") {
+                        this.title = match[2];
+                        return "";
+                    }
+                    if (match[1] === "subtitle") {
+                        this.subtitle = match[2];
+                        return "";
+                    }
+                    if (match[1] === "date") {
+                        this.date = match[2];
+                        return "";
+                    }
+                    if (match[1] === "css") {
+                        const dom = document.createElement("meta");
+                        dom.classList.add("slidejs-meta");
+                        dom.classList.add("import-css");
+                        dom.setAttribute("data-file", match[2]);
+                        document.head.appendChild(dom);
+                        return "";
+                    }
+                    if (match[1] === "page") {
+                        const dom = document.createElement("meta");
+                        dom.classList.add("slidejs-meta");
+                        dom.classList.add("page-add-class");
+                        dom.setAttribute("page-number", context.variables["page_number"]);
+                        dom.setAttribute("add-class", match[2]);
+                        document.head.appendChild(dom);
+                        return "";
+                    }
+                    if (match[1] === "global") {
+                        const dom = document.createElement("meta");
+                        dom.classList.add("slidejs-meta");
+                        dom.classList.add("global-add-class");
+                        dom.setAttribute("add-class", match[2]);
+                        document.head.appendChild(dom);
+                        return "";
+                    }
                 }
                 const match1 = html.raw.match(/<!--\s*@(.+?)\s*-->\s*$/);
                 if (match1) {
@@ -327,6 +320,31 @@
                         this.multicolumn = null;
                         this.columnIndex = -1;
                         return `</div></div>`;
+                    }
+                    if (match1[1] === "cover") {
+                        const dom = document.createElement("meta");
+                        dom.classList.add("slidejs-meta");
+                        dom.classList.add("page-style");
+                        dom.setAttribute("page-number", context.variables["page_number"]);
+                        dom.setAttribute("style", "cover");
+                        document.head.appendChild(dom);
+                        let html = "";
+                        if (this.title) {
+                            html = html + `<div class="title">${this.title}</div>`;
+                        }
+                        if (this.subtitle) {
+                            html = html + `<div class="subtitle">${this.subtitle}</div>`;
+                        }
+                        if (this.presenter) {
+                            html = html + `<div class="presenter">${this.presenter}</div>`;
+                        }
+                        if (this.contact) {
+                            html = html + `<div class="contact">${this.contact}</div>`;
+                        }
+                        if (this.affiliation) {
+                            html = html + `<div class="affiliation">${this.affiliation}</div>`;
+                        }
+                        return html;
                     }
                 }
                 return html.raw;
