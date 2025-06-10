@@ -52,7 +52,7 @@
 * `<!-- @endmulticolumn -->` は明記せずとも，ページ区切り `---` で自動的に段組が終了する
 
 ---
-[: page hide :]
+<!-- @page: hide -->
 # Hidden slide
 
 ---
