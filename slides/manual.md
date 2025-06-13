@@ -1,4 +1,5 @@
-﻿<!-- @css: mint.css -->
+﻿<!-- @css: /exts/mint.css -->
+<!-- @css: /exts/ribbons.css -->
 <!-- @presenter: Takeshi Kojima -->
 <!-- @contact: kojima@tokushima-u.ac.jp -->
 <!-- @affiliation: Tokushima University -->
@@ -163,8 +164,15 @@ print("Hello")
 * デザインを調整したい場合などに
 
 ```
-&lt;!-- @css: mint.css --&gt;
+&lt;!-- @css: /exts/mint.css --&gt;
 ```
+
+* <span class="ribbon-text red">TEST</span>
+
+```
+&lt;!-- @css: /exts/ribbons.css --&gt;
+```
+
 
 ---
 # Shortcut key

@@ -1,4 +1,6 @@
 ﻿class SlideJS {
+
+
     async buildAsync(target, dom, remove_hide_page = true) {
         this.context = {
             variables: { "page_number": 1, },
@@ -78,6 +80,10 @@
         }
 
         const get_actual_path = (raw_path, context) => {
+            const md = /^\/(.+)/.exec(raw_path);
+            if (md) {
+                return raw_path;
+            }
             const is_fullurl = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i.test(raw_path);
             if (!is_fullurl) {
                 if (context.is_local) {
