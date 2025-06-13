@@ -2,9 +2,12 @@
 
 
     async buildAsync(target, dom, remove_hide_page = true) {
+        const pagepath = window.location.pathname;
         this.context = {
             variables: { "page_number": 1, },
             is_local: target.main ? true : false,
+            pagepath: pagepath,
+            pagedir: pagepath.substring(0, pagepath.lastIndexOf('/') + 1)
         };
 
         document.querySelectorAll("link[data-dynamically=\"true\"]").forEach(dom => {
@@ -82,7 +85,7 @@
         const get_actual_path = (raw_path, context) => {
             const md = /^\/(.+)/.exec(raw_path);
             if (md) {
-                return raw_path;
+                return `${this.context.pagedir}${md[1]}`;
             }
             const is_fullurl = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i.test(raw_path);
             if (!is_fullurl) {
