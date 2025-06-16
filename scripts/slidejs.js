@@ -490,25 +490,73 @@ class SlideJSSlideShow {
         this.dom_current_page = null;
         this.all_dom_pages = [];
         this.is_active = false;
+        this.using_canvas = false;
+        this.current_pen_color = "black";
         
         const slidejs = new SlideJS();
         await slidejs.buildAsync(this.target, this.dom_container);
         this.context = slidejs.context;
         this.all_dom_pages = this.dom_container.querySelectorAll("section");
+
+        for (let page of this.all_dom_pages) {
+            const dom_canvas = document.createElement("canvas");
+            dom_canvas.classList.add("canvas");
+            page.appendChild(dom_canvas);
+
+            const ctx = dom_canvas.getContext('2d');
+            function resizeCanvas() {
+                dom_canvas.width = document.body.clientWidth;
+                dom_canvas.height = document.body.clientHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            let drawing = false;
+            let lastX = 0;
+            let lastY = 0;
+
+            dom_canvas.addEventListener('pointerdown', e => {
+                if (!this.using_canvas) return;  // 描画モードでないなら無視
+                drawing = true;
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            });
+
+            dom_canvas.addEventListener('pointermove', e => {
+                if (!this.using_canvas || !drawing) return;
+                ctx.strokeStyle = this.current_pen_color;
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            });
+
+            dom_canvas.addEventListener('pointerup', () => drawing = false);
+            dom_canvas.addEventListener('pointerout', () => drawing = false);
+        }
+
         this.showPage(this.current_page_number);
 
         this._selectStartFullscreen = (event) => {
             event.preventDefault();
         };
         this._clickFullscreen = (_) => {
-            this.showPage(this.current_page_number + 1);
+            if (!this.using_canvas) {
+                this.showPage(this.current_page_number + 1);
+                return;
+            }
         }
 
         this._onMouseMove = (event) => {
-            const cursor = document.querySelector(".prenentation_pointer");
-            if (cursor) {
-                cursor.style.left = `${event.clientX}px`;
-                cursor.style.top = `${event.clientY}px`;
+            const pp_cursor = document.querySelector(".prenentation_pointer");
+            const cp_cursor = document.querySelector(".canvas_pointer");
+            if (pp_cursor) {
+                pp_cursor.style.left = `${event.clientX}px`;
+                pp_cursor.style.top = `${event.clientY}px`;
+            }
+            if (cp_cursor) {
+                cp_cursor.style.left = `${event.clientX}px`;
+                cp_cursor.style.top = `${event.clientY}px`;
             }
         };
         this._keydown = (event) => {
@@ -520,6 +568,8 @@ class SlideJSSlideShow {
                 this.requestFullscreen();
             } else if (event.key === "b") {
                 this.togglePointer();
+            } else if (event.key === "c") {
+                this.toggleCanvas();
             }
         };
         this.requestFullscreen = () => {
@@ -543,11 +593,23 @@ class SlideJSSlideShow {
                         page.style.zoom = scale;
                     }
                     this.dom_container.classList.add("use_prenentation_pointer");
-                    const com_prenentation_pointer = document.createElement("div");
-                    com_prenentation_pointer.classList.add("prenentation_pointer");
-                    this.dom_container.appendChild(com_prenentation_pointer);
-                    com_prenentation_pointer.style.visibility = "hidden";
+                    const dom_prenentation_pointer = document.createElement("div");
+                    dom_prenentation_pointer.classList.add("prenentation_pointer");
+                    this.dom_container.appendChild(dom_prenentation_pointer);
+                    dom_prenentation_pointer.style.visibility = "hidden";
                     
+                    this.dom_container.classList.add("use_canvas_pointer");
+                    const dom_canvas_pointer = document.createElement("div");
+                    dom_canvas_pointer.classList.add("canvas_pointer");
+                    this.dom_container.appendChild(dom_canvas_pointer);
+                    dom_canvas_pointer.style.visibility = "hidden";
+
+                    const tmp = document.querySelector("#tmp-paint-tool")
+                    const frg_paint_tool = tmp.content.cloneNode(true);
+                    this.dom_container.appendChild(frg_paint_tool);
+                    const dom_paint_tool = this.dom_container.querySelector(".paint-tool");
+                    dom_paint_tool.style.visibility = "hidden";
+
                     this.dom_container.addEventListener("selectstart", this._selectStartFullscreen);
                     this.dom_container.addEventListener("click", this._clickFullscreen);
                 }
@@ -557,8 +619,17 @@ class SlideJSSlideShow {
                     page.style.zoom = 1;
                 }
                 this.dom_container.classList.remove("use_prenentation_pointer");
-                const com_prenentation_pointer = this.dom_container.querySelector(".prenentation_pointer");
-                com_prenentation_pointer.remove();
+                const dom_prenentation_pointer = this.dom_container.querySelector(".prenentation_pointer");
+                dom_prenentation_pointer.remove();
+                
+                this.dom_container.classList.remove("use_canvas_pointer");
+                const dom_canvas_pointer = this.dom_container.querySelector(".canvas_pointer");
+                dom_canvas_pointer.remove();
+                
+                const dom_paint_tool = this.dom_container.querySelector(".paint-tool");
+                dom_paint_tool.remove();
+
+                this.using_canvas = false;
                     
                 this.dom_container.removeEventListener("selectstart", this._selectStartFullscreen);
                 this.dom_container.removeEventListener("click", this._clickFullscreen);
@@ -579,6 +650,39 @@ class SlideJSSlideShow {
         } else if(p) {
             p.style.visibility = "hidden";
         }
+    }
+    toggleCanvas() {
+        const p = document.querySelector(".canvas_pointer");
+        if (p.style.visibility === "hidden") {
+            p.style.color = this.current_pen_color;
+            p.style.visibility = "visible";
+            
+            const dom_paint_tool = this.dom_container.querySelector(".paint-tool");
+            dom_paint_tool.style.visibility = "visible";
+
+            this.using_canvas = true;
+        } else if(p) {
+            p.style.visibility = "hidden";
+
+            const dom_paint_tool = this.dom_container.querySelector(".paint-tool");
+            dom_paint_tool.style.visibility = "hidden";
+
+            this.using_canvas = false;
+        }
+    }
+    setPenColor(color) {
+        this.current_pen_color = color;
+        const p = document.querySelector(".canvas_pointer");
+        if (p) {
+            p.style.backgroundColor = this.current_pen_color;
+            console.log(p)
+        }
+    }
+    claerCurrentCanvas() {
+        const canvas = document.querySelector(".preview-area section.show canvas");
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
     generateThumbnails() {

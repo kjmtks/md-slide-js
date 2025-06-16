@@ -18,9 +18,19 @@
     <script lang="javascript"src="./scripts/external/mathjax-tex-svg.js" async="true"></script>
     <script lang="javascript" src="./scripts/slidejs.js"></script>
 
-    <template id="tmp-presentor-tool">
-        <div></div>
+
+    <template id="tmp-paint-tool">
+        <div class="paint-tool">
+            <div class="item" data-type="clear" onclick="slideshow.claerCurrentCanvas()"></div>
+            <div class="item" data-type="color" style="background-color: black" onclick="slideshow.setPenColor(this.style.backgroundColor)"></div>
+            <div class="item" data-type="color" style="background-color: red" onclick="slideshow.setPenColor(this.style.backgroundColor)"></div>
+            <div class="item" data-type="color" style="background-color: blue" onclick="slideshow.setPenColor(this.style.backgroundColor)"></div>
+            <div class="item" data-type="color" style="background-color: green" onclick="slideshow.setPenColor(this.style.backgroundColor)"></div>
+            <div class="item" data-type="color" style="background-color: magenta" onclick="slideshow.setPenColor(this.style.backgroundColor)"></div>
+            <div class="item" data-type="color" style="background-color: orange" onclick="slideshow.setPenColor(this.style.backgroundColor)"></div>
+        </div>
     </template>
+
 </head>
 
 <body>

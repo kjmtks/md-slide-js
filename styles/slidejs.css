@@ -390,12 +390,58 @@ section {
     position: fixed;
     width: 8px;
     height: 8px;
-    background-color: red;
+    background-color: crimson;
     border-radius: 50%;
     pointer-events: none;
     transform: translate(-50%, -50%);
     box-shadow: 0 0 10px 5px rgba(255, 0, 0, 0.75);
     z-index: 9999;
+}
+
+
+.slidejs.use_canvas_pointer {
+    cursor: none;
+}
+.canvas_pointer {
+    display: inline;
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background-color: black;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}
+
+.canvas {
+    position: absolute;
+    padding: 0 !important;
+    margin: 0 !important;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+.paint-tool {
+    position: absolute;
+    padding: 0 !important;
+    margin: 0 !important;
+    top: 0px;
+    left: 0px;
+    display: flex;
+    flex-direction: row;
+}
+.paint-tool .item {
+    width: 30px;
+    height: 30px;
+    border: white 2px solid;
+}
+.paint-tool .item[data-type="clear"] {
+    background-image: url(../fontawesome-icons/eraser-solid.svg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
 }
 
 .slideshow-page {
