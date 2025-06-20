@@ -97,6 +97,8 @@
                 } else {
                     return context.markdown_dir + raw_path;
                 }
+            } else {
+                return raw_path;
             }
         };
 
@@ -675,7 +677,6 @@ class SlideJSSlideShow {
         const p = document.querySelector(".canvas_pointer");
         if (p) {
             p.style.backgroundColor = this.current_pen_color;
-            console.log(p)
         }
     }
     claerCurrentCanvas() {
