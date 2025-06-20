@@ -273,8 +273,7 @@ section {
 }
 .slidejs section pre code.code-block {
     font-family: var(--tt-font);
-    padding-top: 0;
-    padding: 0.25em 0.5em 0.25em 0.5em !important;
+    padding: 0.75em 0.5em 0.75em 0.5em !important;
     box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.5);
     font-size: 0.75em;
 }
@@ -282,6 +281,11 @@ section {
     border-radius: 0.1em 0.1em 0.1em 0.1em;
     padding: 0.1em 0.25em 0.1em 0.25em;
     background-color: #eee;
+}
+
+.slidejs section pre, .slidejs section p {
+    margin-top: 0 !important;
+    margin-bottom: 0.5em !important;
 }
 
 .slidejs section[data-style="cover"] {
