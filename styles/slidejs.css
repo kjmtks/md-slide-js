@@ -398,6 +398,9 @@ section {
     z-index: 9999;
 }
 
+.slidejs:not(.use_canvas_pointer) canvas  {
+    display: none;
+}
 
 .slidejs.use_canvas_pointer {
     cursor: none;
