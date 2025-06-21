@@ -261,6 +261,12 @@ section {
     background-color: var(--theme-color--100);
 }
 
+
+.slidejs section pre, .slidejs section p {
+    margin-top: 0;
+    margin-bottom: 0.5em;
+}
+
 .slidejs section .code-name {
     background-color: #eee;
     color: black;
@@ -283,9 +289,8 @@ section {
     background-color: #eee;
 }
 
-.slidejs section pre, .slidejs section p {
-    margin-top: 0 !important;
-    margin-bottom: 0.5em !important;
+.slidejs section code {
+    font-family: var(--tt-font);
 }
 
 .slidejs section[data-style="cover"] {
