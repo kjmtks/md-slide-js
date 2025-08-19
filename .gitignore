@@ -1,0 +1,6 @@
+!slides/manual.md
+!slides/logo.svg
+slides/*
+tmp
+.vscode
+node_modules

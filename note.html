@@ -1,0 +1,180 @@
+﻿
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        @import url("./node_modules/@fontsource/m-plus-1p");
+        @import url("./node_modules/@fontsource/cascadia-mono");
+    </style>
+    <link rel="stylesheet" href="./node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+
+    <link rel="stylesheet" href="./styles/slidejs.css" />
+
+    <script lang="javascript" src="./node_modules/@highlightjs/cdn-assets/highlight.min.js"></script>
+    <link rel="stylesheet" href="./node_modules/@highlightjs/cdn-assets/styles/vs.min.css">
+
+    <script lang="javascript" src="./node_modules/marked/marked.min.js"></script>
+    <script defer lang="javascript" src="./node_modules/mathjax/tex-svg.js" async="true"></script>
+    <script lang="javascript" src="./scripts/slidejs.js"></script>
+
+    <title></title>
+
+    <style>
+        #note {
+            font-size: 24px;
+            overflow: hidden;
+            padding: 0px 20px 0px 20px;
+        }
+        #status {
+            display: flex;
+            flex-direction: row;
+            font-size: 36px;
+            justify-content: center;
+        }
+        #watch {
+            margin-left: 100px;
+        }
+        #play, #reset {
+            cursor: pointer;
+        }
+        #watch:not(.started) {
+            color: lightgray;
+        }
+        #watch.started {
+            color: black;
+        }
+
+        body {
+            background-color: white;
+        }
+        #content {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100%;
+        }
+        #slide-preview {
+            margin: 10px;
+        }
+        #slide-preview > section {
+            border: 1px solid black;
+            
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+    <div id="content">
+        <div id="info">
+            <div id="status">
+                <div id="clock"></div>
+                <div id="watch">00:00:00</div>
+                <div id="play">▶️</div>
+                <div id="reset">⏹️</div>
+            </div>
+            <div id="slide-preview" class="slidejs" style="zoom: 0.5;"></div>
+        </div>
+        <div id="note"></div>
+    </div>
+    
+
+    <script lang="javascript">
+
+        const channel = new BroadcastChannel('slidejs-presenter-note');
+        var start_at = null;
+        var res = 0;
+
+        channel.addEventListener('message', (event) => {
+            const message = event.data;
+            if (message.type === 'note') {
+                document.querySelector("#note").innerHTML = message.html;
+            }
+            if (message.type === 'slide') {
+                document.querySelector("#slide-preview").innerHTML = message.html;
+            }
+            if (message.type === 'css') {
+                message.links.forEach(link => {
+                    const dom = document.createElement('link');
+                    dom.rel = 'stylesheet';
+                    dom.href = link;
+                    document.head.appendChild(dom);
+                });
+            }
+        });
+        function displayTime() {
+            const now = new Date();
+
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const second = now.getSeconds();
+            const currentTime = `${( '00' + hour ).slice( -2 )}:${( '00' + minute ).slice( -2 )}:${( '00' + second ).slice( -2 )}`;;
+            document.querySelector('#clock').textContent = currentTime;
+
+            if (start_at) {
+                const diff = now - start_at + res;
+                const ms = Math.floor(diff / 1000);
+                const diff_sec = ms % 60;
+                const diff_min = Math.floor(diff / (60*1000)) % 60;
+                const diff_hour = Math.floor(diff / (60*60*1000));
+                const diff_currentTime = `${( '00' + diff_hour ).slice( -2 )}:${( '00' + diff_min ).slice( -2 )}:${( '00' + diff_sec ).slice( -2 )}`;
+                document.querySelector('#watch').textContent = diff_currentTime;
+            }
+        }
+        function togglePlay() {
+            const p = document.querySelector("#play");
+            const w = document.querySelector("#watch");
+            if (start_at) {
+                res = res + (new Date() - start_at);
+                start_at = null;
+                p.innerHTML = "▶️";
+                w.classList.remove("started");
+            } else {
+                start_at = new Date();
+                p.innerHTML = "⏸️";
+                w.classList.add("started");
+            }
+        }
+
+        window.addEventListener("load",  (event) => {
+            displayTime();
+            setInterval(displayTime, 500);
+
+            document.querySelector("#play").addEventListener("click", () => {
+                togglePlay();
+            });
+            document.querySelector("#reset").addEventListener("click", () => {
+                res = 0;
+                start_at = null;
+                const p = document.querySelector("#play");
+                const w = document.querySelector("#watch");
+                p.innerHTML = "▶️";
+                w.classList.remove("started");
+                w.innerHTML = "00:00:00";
+            });
+
+            channel.postMessage({type: 'request_css'});
+            channel.postMessage({type: 'request_note'});
+            channel.postMessage({type: 'request_slide'});
+        });
+
+
+        window.addEventListener("keydown", async (event) => {
+            if (event.key === "ArrowLeft" || event.key === "ArrowUp" || event.key === "PageUp") {
+                channel.postMessage({type: 'go_back'});
+            } else if (event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === "PageDown") {
+                channel.postMessage({type: 'go_next'});
+            } else if (event.key === "b") {
+                channel.postMessage({type: 'toggle_pointer'});
+            }
+        });
+        
+        
+    </script>
+</body>
+</html>

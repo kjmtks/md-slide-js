@@ -1,0 +1,635 @@
+﻿
+:root {
+    --page-width-HD: 1920px;
+    --page-height-HD: 1080px;
+
+    --page-width: var(--page-width-HD);
+    --page-height: var(--page-height-HD);
+    --page-aspect-ratio: 16/9;
+}
+
+@page {
+    size: var(--page-width) var(--page-height);
+    margin: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: gray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+section.hide {
+    opacity: 0.5;
+}
+
+section {
+    font-size: 32px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: var(--page-width);
+    height: var(--page-height);
+    aspect-ratio: var(--page-aspect-ratio);
+    align-items: center;
+    justify-content: start;
+    page-break-after: always;
+    background: white;
+    box-sizing: border-box;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.slidejs section:not(.no-page-number) .page-number {
+    position: absolute;
+    bottom: 1em;
+    right: 2em;
+    margin: 0;
+    color: gray;
+    font-size: 0.75em;
+    text-align: right;
+}
+.slidejs section.no-page-number .page-number {
+    display: none;
+}
+
+.slidejs .multi-column {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+.slidejs .column  {
+    flex: 1;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+.slidejs .column:not(:last-child) {
+    margin-right: 1em;
+}
+
+.slidejs section:not(.no-page-number) .page-number {
+    width: 10em;
+    font-family: var(--tt-font);
+}
+
+.slidejs video {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.slidejs .note {
+    display: none;
+}
+
+.slidejs mjx-container[display="true"] {
+    margin: 0.2em 0 !important;
+    padding-top: 0.75em;
+    padding-bottom: 0.75em;
+}
+
+
+/* Default theme */
+:root {
+    --main-font: "M PLUS 1p", sans-serif;
+    --tt-font: "Cascadia Mono", 'Courier New', Courier, monospace;
+}
+
+.slidejs section {
+    font-family: var(--main-font);
+    font-style: normal;
+    padding: 1em 2em 1em 2em;
+}
+
+.slidejs section .title {
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0.5em 2em 0em 2em;
+    font-size: 2em;
+    font-weight: bold;
+}
+.slidejs section .column > .title {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.slidejs section .subtitle {
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0.25em 2em 0em 2em;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.slidejs section .column > .subtitle {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.slidejs  section .heading3 {
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0.5em 0em 0em 0em;
+    font-size: 1em;
+    font-weight: bold;
+}
+.slidejs section .column > .heading3 {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.slidejs section[data-style="content"] > * {
+    width: 100%;
+}
+.slidejs section[data-style="content"] > *:first-child, .column > *:first-child {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+/*
+.slidejs section[data-style="content"] > *:not(:first-child), .column > *:not(:first-child) {
+    padding: 0;
+    margin: 0.5em 0 0 0;
+}
+*/
+
+.slidejs section a {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    color: blue;
+}
+
+.slidejs section em {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    font-style: normal;
+}
+.slidejs section blockquote {
+    border-left: 0.5em solid lightgray;
+    padding: 0;
+    background-color: #eee;
+    font-style: italic;
+    color: #555;
+}
+.slidejs section blockquote p {
+    margin: 0.25em;
+}
+
+.slidejs section ul, .slidejs section ol {
+    list-style-position: outside;
+    padding: 0 0 0 0;
+    margin: 0 0 0 80px;
+}
+.slidejs .column ul, .slidejs .column ol {
+    margin-left: 40px;
+}
+.slidejs section li {
+    padding: 0;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.slidejs section figure {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    width: 100%;
+}
+.slidejs section figure figcaption {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    font-size: 0.75em;
+}
+.slidejs section img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+.slidejs section .figcaption {
+    display: block;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    font-size: 0.75em;
+}
+.slidejs section figure table {
+    display: inline-table;
+    border-collapse: collapse;
+    border-spacing: 0;
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.5);
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.slidejs section figure th, figure td {
+    padding: 12px;
+    border: 1px solid gray;
+}
+.slidejs section figure th {
+    background-color: lightgray;
+    font-weight: bold;
+    text-align: center;
+}
+.slidejs section figure td {
+    text-align: left;
+    background-color: white;
+}
+.slidejs section figure tr:nth-child(even) {
+    background-color: var(--theme-color--50);
+}
+.slidejs section figure tr:hover {
+    background-color: var(--theme-color--100);
+}
+
+
+.slidejs section pre, .slidejs section p {
+    margin-top: 0;
+    margin-bottom: 0.5em;
+}
+
+.slidejs section .code-name {
+    background-color: #eee;
+    color: black;
+    display: inline-block;
+    font-family: var(--tt-font);
+    margin: 0;
+    padding: 0.25em 1em 0.1em 1em;
+    box-shadow: 1px 0px 1px 0px rgba(0, 0, 0, 0.5);
+    font-size: 0.75em;
+    margin-top: 0.5em;
+}
+.slidejs section pre code.code-block {
+    font-family: var(--tt-font);
+    padding: 0.75em 0.5em 0.75em 0.5em !important;
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.5);
+    font-size: 0.75em;
+    margin-top: 0.5em;
+}
+
+.code-name ~ code.code-block {
+    margin-top: 0 !important;
+}
+
+.slidejs section code:not(.code-block)  {
+    border-radius: 0.1em 0.1em 0.1em 0.1em;
+    padding: 0.1em 0.25em 0.1em 0.25em;
+    background-color: #eee;
+}
+
+.slidejs section code {
+    font-family: var(--tt-font);
+}
+
+.slidejs section[data-style="cover"] {
+    justify-content: center;
+}
+.slidejs section[data-style="cover"] .title {
+    display: inline-block;
+    text-align: center;
+    font-size: 3em;
+    margin: 0;
+    font-weight: bold;
+}
+.slidejs section[data-style="cover"] .subtitle {
+    display: inline-block;
+    text-align: center;
+    font-size: 2em;
+    margin: 0.1em 0 0 0;
+    font-weight: bold;
+}
+.slidejs section[data-style="cover"] .presenter {
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    font-size: 2em;
+    margin: 2em 0 0 0;
+}
+.slidejs section[data-style="cover"] .contact {
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    font-size: 1.25em;
+    margin: 0.25em 0 0 0;
+    font-family: var(--tt-font);
+}
+.slidejs section[data-style="cover"] .affiliation {
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    font-size: 1.5em;
+    margin: 0.5em 0 0 0;
+}
+
+
+
+.slidejs section[data-style="content"].no-content {
+    justify-content: center;
+}
+.slidejs section[data-style="content"].no-content .title {
+    display: inline-block;
+    text-align: center;
+    font-size: 3em;
+    margin: 0;
+    font-weight: bold;
+    background: none;
+}
+.slidejs section[data-style="content"].no-content .subtitle {
+    display: inline-block;
+    text-align: center;
+    border-left: none;
+}
+
+
+.slidejs section[data-style="content"] .title {
+    background: linear-gradient(transparent 70%, lightgray 70%);
+    margin-bottom: 0.25em;
+}
+.slidejs section[data-style="content"] .subtitle {
+    border-left: 0.3em solid lightgray;
+    padding: 0 0 0 0.33em;
+}
+
+.print-only {
+    display: none;
+}
+
+
+/* ------------------------------- */
+/* SlideShowPage                   */
+/* ------------------------------- */
+
+
+.slidejs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-slide {
+    display: flex;
+    flex-direction: column;
+    margin: 1em;
+}
+
+.slidejs section {
+    display: none;
+}
+.slidejs section.show {
+    display: flex;
+}
+
+.slidejs.use_prenentation_pointer {
+    cursor: none;
+}
+.prenentation_pointer {
+    display: inline;
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background-color: crimson;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px 5px rgba(255, 0, 0, 0.75);
+    z-index: 9999;
+}
+
+.slidejs:not(.use_canvas_pointer) canvas  {
+    display: none;
+}
+
+.slidejs.use_canvas_pointer {
+    cursor: none;
+}
+.canvas_pointer {
+    display: inline;
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background-color: black;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}
+
+.canvas {
+    position: absolute;
+    padding: 0 !important;
+    margin: 0 !important;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+.paint-tool {
+    position: absolute;
+    padding: 0 !important;
+    margin: 0 !important;
+    top: 0px;
+    left: 0px;
+    display: flex;
+    flex-direction: row;
+}
+.paint-tool .item {
+    width: 30px;
+    height: 30px;
+    border: white 2px solid;
+}
+.paint-tool .item[data-type="clear"] {
+    font-size: 26px;
+}
+
+.slideshow-page {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: 100vh;
+}
+.left-side {
+    display: flex;
+    flex-direction: column;
+    background-color:gray;
+    width: 100%;
+    height: 100%;
+}
+.menu {
+    background-color: orange;
+    padding: 0.5em 1em;
+    display: flex;
+    flex-direction: row;
+}
+.menu-item {
+    cursor: pointer;
+}
+.menu-item:hover {
+    filter: invert(1);
+}
+.menu-item:not(:first-child) {
+    margin-left: 1em;
+}
+.menu-item:not(.show) {
+    display: none;
+}
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+select:hover {
+    border-color: #888;
+}
+select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button.cancel {
+    background-color: crimson;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:active {
+    background-color: #003f80;
+}
+
+.thumbnails {
+    display: flex;
+    flex-direction: column;
+    background-color:gray;
+    width: auto;
+    max-height: 100vh;
+    overflow-y: auto;
+    justify-content: start;
+    align-items: center;
+}
+.thumbnail {
+    margin: 0 5px;
+    cursor: pointer;
+    position: relative;
+}
+.thumbnail:not(:first-child) {
+    margin: 5px 0 0 0;
+}
+.thumbnail .thumbnail-page {
+    zoom: 0.3;
+}
+.thumbnail .thumbnail-page > * {
+    pointer-events: none;
+}
+.thumbnail:not(.active) .thumbnail-page {
+    opacity: 0.75;
+}
+.thumbnail .page-number-icon {
+    position: absolute;
+    background-color: gray;
+    color: white;
+    font-size: 18px !important;
+    padding: 0.5em 1em !important;
+    z-index: 100;
+    top: 10px;
+    right: 10px;
+}
+
+.preview-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: gray;
+}
+
+.note-preview {
+    display: none;
+    box-sizing: border-box;
+    font-size: 18px;
+    padding: 0.5em;
+    background-color:beige;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+}
+.note-preview.show {
+    display: block;
+}
+.note-preview * {
+    margin: 0;
+    padding: 0;
+}
+.note-preview > ul, .note-preview > ol {
+    list-style-position: outside;
+    margin-left: 1em;
+}
+
+
+@media print {
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .left-side, .note-preview {
+        display: none !important;
+    }
+    .slideshow-page {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .main-slide, .preview-area {
+        margin: 0 !important;
+        display: block !important;
+    }
+    .main-slide section {
+        display: flex !important;
+    }
+
+    .print-only {
+        display: inline !important;
+    }
+    .slide-only {
+        display: none !important;
+    }
+    mjx-container[jax="SVG"] svg {
+      filter: brightness(90%);
+    }
+}

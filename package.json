@@ -1,0 +1,31 @@
+{
+  "name": "slidejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "python3 -m http.server 3000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kjmtks/md-slide-js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kjmtks/md-slide-js/issues"
+  },
+  "homepage": "https://github.com/kjmtks/md-slide-js#readme",
+  "devDependencies": {
+    "cpy-cli": "^5.0.0"
+  },
+  "dependencies": {
+    "@fontsource/cascadia-mono": "^5.2.2",
+    "@fontsource/m-plus-1p": "^5.2.6",
+    "@fortawesome/fontawesome-free": "^7.0.0",
+    "@highlightjs/cdn-assets": "^11.11.1",
+    "marked": "15.0.7",
+    "mathjax": "^4.0.0"
+  }
+}

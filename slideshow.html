@@ -1,0 +1,290 @@
+﻿
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>md-slide.js</title>
+
+    <style>
+        @import url("./node_modules/@fontsource/m-plus-1p/index.css");
+        @import url("./node_modules/@fontsource/cascadia-mono/index.css");
+    </style>
+    <link rel="stylesheet" href="./node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+
+    <link rel="stylesheet" href="./styles/slidejs.css" />
+
+    <script lang="javascript" src="./node_modules/@highlightjs/cdn-assets/highlight.min.js"></script>
+    <link rel="stylesheet" href="./node_modules/@highlightjs/cdn-assets/styles/vs.min.css">
+
+    <script lang="javascript" src="./node_modules/marked/marked.min.js"></script>
+    <script defer lang="javascript" src="./node_modules/mathjax/tex-svg.js" async="true"></script>
+    <script lang="javascript" src="./scripts/slidejs.js"></script>
+
+
+    <template id="tmp-paint-tool">
+        <div class="paint-tool">
+            <div class="item" data-type="clear" onclick="slideshow.claerCurrentCanvas()"><i class="fa-solid fa-eraser"></i></div>
+            <div class="item" data-type="color" style="background-color: black" onclick="slideshow.setPenColor(this.style.backgroundColor)"></div>
+            <div class="item" data-type="color" style="background-color: red" onclick="slideshow.setPenColor(this.style.backgroundColor)"></div>
+            <div class="item" data-type="color" style="background-color: blue" onclick="slideshow.setPenColor(this.style.backgroundColor)"></div>
+            <div class="item" data-type="color" style="background-color: green" onclick="slideshow.setPenColor(this.style.backgroundColor)"></div>
+            <div class="item" data-type="color" style="background-color: magenta" onclick="slideshow.setPenColor(this.style.backgroundColor)"></div>
+            <div class="item" data-type="color" style="background-color: orange" onclick="slideshow.setPenColor(this.style.backgroundColor)"></div>
+        </div>
+    </template>
+
+</head>
+
+<body>
+    <dialog id="dialog-open-local">
+        <select class="select-markdowns">
+            <option class="option-open-local-directory"></option>
+        </select>
+        <button class="button-open-selected-markdown">Open</button>
+        <button class="button-modal-cancel cancel">Cancel</button>
+    </dialog>
+
+    <div class="slideshow-page">
+        <div class="left-side">
+            <div class="menu">
+                <div class="menu-item button-dialog-open-local show">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <div class="menu-item button-toggle-note">
+                    <i class="fa-solid fa-note-sticky"></i>
+                </div>
+                <div class="menu-item button-start-fullscreen">
+                    <i class="fa-solid fa-expand"></i>
+                </div>
+                <div class="menu-item button-open-screen-window">
+                    <i class="fa-solid fa-window-restore"></i>
+                </div>
+                <div class="menu-item button-start-print">
+                    <i class="fa-solid fa-print"></i>
+                </div>
+            </div>
+            <div class="thumbnails slidejs"></div>
+        </div>
+        <div class="preview-area">
+            <div class="main-slide slidejs">
+            </div>
+            <div class="note-preview"></div>
+        </div>
+    </div>
+
+    <script lang="javascript">
+
+        var  note_window = null;
+        const channel = new BroadcastChannel('slidejs-presenter-note');
+
+        channel.addEventListener("message", (event) => {
+            const message = event.data;
+            if (message.type === 'go_next') {
+                slideshow.goNextPage()
+            }
+            if (message.type === 'go_back') {
+                slideshow.goBackPage()
+            }
+            if (message.type === 'toggle_pointer') {
+                slideshow.togglePointer()
+            }
+            if (message.type === 'request_css') {
+                const links = Array.from(document.querySelectorAll(`link[data-dynamically="true"]`)).map(x => x.href);
+                channel.postMessage({type: 'css', links: links});
+            }
+            if (message.type === 'request_note') {
+                channel.postMessage({type: 'note', html: document.querySelector(".note-preview").innerHTML});
+            }
+            if (message.type === 'request_slide') {
+                channel.postMessage({type: 'slide', html: document.querySelector(".main-slide>.show").cloneNode(true).outerHTML});
+            }
+        });
+
+        function selectThumbnail(page_number) {
+            const dom_thumbnails = document.querySelector(".thumbnails");
+            const dom_thumbs = dom_thumbnails.querySelectorAll(".thumbnail");
+            for (let [index, dom_thumb] of dom_thumbs.entries()) {
+                if (index + 1 == page_number) {
+                    dom_thumb.classList.add("active");
+                    dom_thumb.scrollIntoView({behavior: 'smooth', block: 'center'});
+                } else {
+                    dom_thumb.classList.remove("active");
+                }
+            }
+        }
+
+        function updateMenu() {
+            if (slideshow) {
+                document.querySelector(".menu-item.button-start-fullscreen")?.classList.add("show");
+                document.querySelector(".menu-item.button-start-print")?.classList.add("show");
+                document.querySelector(".menu-item.button-open-screen-window")?.classList.add("show");
+                // document.querySelector(".menu-item.button-toggle-note")?.classList.add("show");
+            }
+        }
+
+        function toggleNote() {
+            if (document.querySelector(".note-preview").classList.contains("show")) {
+                document.querySelector(".note-preview").classList.remove("show")
+            } else {
+                document.querySelector(".note-preview").classList.add("show")
+            }
+        }
+
+        async function _loadFileRecursive(entry, callback=null, path=[], files={}) {
+            if (entry.name[0] === ".") { return files; }
+            if (entry instanceof FileSystemDirectoryHandle) {
+                for await (const child of entry.values()) {
+                    await _loadFileRecursive(child, callback, [...path, child.name], files);
+                }
+            } else {
+                files[path.join("/")] = await entry.getFile();
+                if (callback) { await callback(entry, path); }
+            }
+            return files;
+        }
+
+        async function setupSlideShow(dom_slideshow_container, target, initial_page_number) {
+            const dom_note_preview = document.querySelector(".note-preview");
+            const afterShowPageCallback = (page_number, dom_current_page) => {
+                const notes = dom_current_page.querySelectorAll(".note");
+                let note_html = "";
+                for (let note of notes) {
+                    note_html = note_html + note.innerHTML;
+                }
+                dom_note_preview.innerHTML = note_html;
+                const url = new URL(window.location);
+                url.searchParams.set("p", page_number);
+                window.history.replaceState(null, "", url.toString());
+                selectThumbnail(page_number);
+                channel.postMessage({type: 'note', html: document.querySelector(".note-preview").innerHTML});
+                channel.postMessage({type: 'slide', html: document.querySelector(".main-slide>.show").cloneNode(true).outerHTML});
+            }
+
+            slideshow = new SlideJSSlideShow(dom_slideshow_container, target, initial_page_number, afterShowPageCallback);
+            await slideshow.buildAsync();
+
+            /* Execute once after build slides */
+            await MathJax.typesetPromise();
+            hljs.highlightAll();
+
+            const dom_thumbnails = document.querySelector(".thumbnails");
+            const thumbnails = slideshow.generateThumbnails();
+            for (let dom_thumb_page of thumbnails) {
+                const page_number = parseInt(dom_thumb_page.getAttribute("data-page-number"));
+                const dom_thumb = document.createElement("div");
+                dom_thumb.classList.add("thumbnail");
+                dom_thumb.appendChild(dom_thumb_page);
+                
+                const dom_page_number = document.createElement("div");
+                dom_page_number.classList.add("page-number-icon");
+                dom_page_number.innerText = page_number;
+                dom_thumb.appendChild(dom_page_number);
+
+                dom_thumb.addEventListener("click", (event) => {
+                    slideshow.showPage(page_number);
+                });
+
+                dom_thumbnails.appendChild(dom_thumb)
+            }
+
+            slideshow.activate();
+            selectThumbnail(initial_page_number);
+            updateMenu();
+        }
+
+        let local_files = {};
+        let slideshow = null;
+
+        function resetSlideshow() {
+            const dom_metas = document.head.querySelectorAll("meta.slidejs-meta");
+            for (const dom_meta of dom_metas) {
+                dom_meta.remove();
+            }
+            const dom_thumbnails = document.querySelector(".thumbnails");
+            dom_thumbnails.innerHTML = "";
+            
+            const dom_note_preview = document.querySelector(".note-preview");
+            dom_note_preview.innerHTML = "";
+            
+            const dom_slideshow_container = document.querySelector(".main-slide");
+            dom_slideshow_container.innerHTML = "";
+
+            if (slideshow) { slideshow.deactivate(); }
+        }
+
+        window.addEventListener("load", async () => {
+            const dom_slideshow_container = document.querySelector(".main-slide");
+            const url = new URL(window.location.href);
+            const param_p = url.searchParams.get("p");
+            const initial_page_number = param_p ? parseInt(param_p) : 1;
+            const param_md = url.searchParams.get("md");
+            if (param_md) {
+                resetSlideshow();
+                await setupSlideShow(dom_slideshow_container, param_md, initial_page_number);
+            }
+            
+            document.querySelector(".button-dialog-open-local").onclick = async (event) => {
+                try {
+                    const dirHandle = await window.showDirectoryPicker();
+                    document.querySelector("#dialog-open-local").showModal();
+                    const dom_entrys = document.querySelector(".select-markdowns");
+                    dom_entrys.innerHTML = "";
+                    local_files = await _loadFileRecursive(dirHandle, async (entry, path) => {
+                        if (entry.name.match(/\.md$/)) {
+                            const dom_entry = document.createElement("option");
+                            dom_entry.classList.add("markdown-file");
+                            const p = path.join("/");
+                            dom_entry.value = p;
+                            dom_entry.innerText = p;
+                            dom_entrys.appendChild(dom_entry);
+                        }
+                    });
+                } catch { }
+            };
+            document.querySelector(".button-open-selected-markdown").onclick = async (event) => {
+                const dom_entrys = document.querySelector(".select-markdowns");
+                document.querySelector("#dialog-open-local").close();
+                const dom_slideshow_container = document.querySelector(".main-slide");
+                const match = dom_entrys.value.match(/^(.*)[\\/][^\\/]+$/)
+                const wokingdir = match ? match[1] : "";
+                const url = new URL(window.location);
+                url.searchParams.delete("md")
+                window.history.replaceState(null, "", url.toString());
+                resetSlideshow();
+                await setupSlideShow(dom_slideshow_container, { main: local_files[dom_entrys.value], wokingdir: wokingdir, files: local_files }, 1);
+            };
+            document.querySelector(".button-modal-cancel").onclick = async (event) => {
+                document.querySelector("#dialog-open-local")?.close();
+            };
+
+            document.querySelector(".button-start-fullscreen").onclick = async (event) => {
+                slideshow.requestFullscreen();
+            };
+            document.querySelector(".button-start-print").onclick = async (event) => {
+                printSlides()
+            };
+            document.querySelector(".button-open-screen-window").onclick = async (event) => {
+                if (note_window && !note_window.closed) {
+                    note_window.close();
+                    note_window = null;
+                } else {
+                    note_window = window.open(`./note.html${window.location.search}`, "_blank", 1);
+                }
+                
+            };
+            document.querySelector(".button-toggle-note").onclick = async (event) => {
+                toggleNote();
+            };
+        });
+            
+        function printSlides() {
+            const title = document.title;
+            document.title = slideshow.context?.variables?.title?.replaceAll(" ", "_") ?? "slide";
+            window.print();
+            document.title = title;
+        }
+
+    </script>
+</body>
+</html>
