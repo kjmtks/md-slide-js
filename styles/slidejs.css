@@ -6,6 +6,13 @@
     --page-width: var(--page-width-HD);
     --page-height: var(--page-height-HD);
     --page-aspect-ratio: 16/9;
+
+    --color-text: black;
+    --color-bg: white;
+    --color-text-inverse: white;
+    --color-bg-inverse: black;
+    --color-text-accent: white;
+    --color-bg-accent: black;
 }
 
 @page {
@@ -21,6 +28,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    color: var(--color-text);
 }
 
 section.hide {
@@ -38,7 +46,7 @@ section {
     align-items: center;
     justify-content: start;
     page-break-after: always;
-    background: white;
+    background: var(--color-bg);
     box-sizing: border-box;
     padding: 0;
     flex-shrink: 0;
@@ -253,7 +261,7 @@ section {
 }
 .slidejs section figure td {
     text-align: left;
-    background-color: white;
+    background-color: var(--color-bg);
 }
 .slidejs section figure tr:nth-child(even) {
     background-color: var(--theme-color--50);

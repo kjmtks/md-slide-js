@@ -1,0 +1,67 @@
+﻿/* fancy-hlists -------------------------------------------------------------*/
+/* 使い方の例:
+    <!-- @ul-class: fancy-hlists -->
+    * 111
+        * aaa
+        * bbb
+    * 222
+        * aaa
+        * bbb
+*/
+.fancy-hlists {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  padding: 40px 20px;
+  margin: 0;
+  gap: 40px;
+}
+
+.fancy-hlists > li {
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.fancy-hlists > li > p {
+  display: inline-block;
+  padding: 0.25em 1em;
+  border: 3px solid var(--color-bg-accent);
+  background-color: var(--color-bg-accent);
+  color: var(--color-text-accent);
+  border-radius: 6px;
+  z-index: 1;
+  margin-bottom: 0.25em;
+}
+
+.fancy-hlists > li > ul {
+  display: block;
+  list-style-type: initial;
+  list-style-position: inside;
+  font-size: 0.75em;
+  padding: 0;
+  padding-top: 2em;
+  padding-bottom: 0.5em;
+  margin: 0;
+  margin-top: -1.75em;
+  border: 3px solid var(--color-bg-accent);
+  border-radius: 6px;
+}
+
+.fancy-hlists > li > ul > li {
+  display: list-item;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+.fancy-hlists > li > ul > li > p {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}

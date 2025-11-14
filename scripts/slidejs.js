@@ -267,6 +267,14 @@
                         this.columnIndex = 0;
                         return `<div class="multi-column"><div class="column" style="flex: ${this.multicolumn[this.columnIndex]}">`;
                     }
+                    if (match[1] === "ul-class") {
+                        this.ulClass = match[2];
+                        return "";
+                    }
+                    if (match[1] === "ol-class") {
+                        this.olClass = match[2];
+                        return "";
+                    }
                     if (match[1] === "image-style") {
                         this.imageStyle = match[2];
                         return "";
@@ -375,12 +383,25 @@
             heading(heading) {
                 if (heading.depth == 1) {
                     return `<div class="title">${this.parser.parseInline(heading.tokens)}</div>`;
-                    
                 }
                 if (heading.depth == 2) {
                     return `<div class="subtitle">${this.parser.parseInline(heading.tokens)}</div>`;
                 }
                 return `<div class="heading${heading.depth}">${this.parser.parseInline(heading.tokens)}</div>`;
+            },
+            list(token) {
+                const tag = token.ordered ? "ol" : "ul";
+                const className = token.ordered ? (this.olClass ?? "") : (this.ulClass ?? "");
+
+                const body = token.items.map(item => {
+                    const inner = this.parser.parse(item.tokens);
+                    return `<li>${inner}</li>`;
+                }).join("");
+
+                const start = token.start;
+                const startAttr = token.ordered && start != null && start !== "" && start !== 1 ? ` start="${start}"` : "";
+
+                return `<${tag} class="${className}"${startAttr}>${body}</${tag}>`;
             },
             image(image) {
                 const caption = image.text ? image.text : this.caption;
