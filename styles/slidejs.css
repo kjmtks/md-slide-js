@@ -166,10 +166,10 @@ section {
 .slidejs section[data-style="content"] > * {
     width: 100%;
 }
-.slidejs section[data-style="content"] > *:first-child, .column > *:first-child {
+.slidejs section[data-style="content"] > *:first-child:not(blockquote), .column > *:first-child:not(blockquote) {
     box-sizing: border-box;
-    padding: 0;
-    margin: 0;
+    padding-top: 0;
+    margin-top: 0;
 }
 
 /*
@@ -640,4 +640,220 @@ button:active {
     mjx-container[jax="SVG"] svg {
       filter: brightness(90%);
     }
+}
+
+
+
+/* ------------------------------- */
+/* Widgets                         */
+/* ------------------------------- */
+
+/* fancy-hlists -------------------------------------------------------------*/
+/* 使い方の例:
+    <!-- @ul-class: fancy-hlists -->
+    * 111
+        * aaa
+        * bbb
+    * 222
+        * aaa
+        * bbb
+*/
+.fancy-hlists {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  padding: 40px 20px;
+  margin: 0;
+  gap: 40px;
+}
+.fancy-hlists > li {
+  width: 100%;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.fancy-hlists > li > p {
+  display: inline-block;
+  padding: 0.25em 1em;
+  border: 3px solid var(--color-bg-accent);
+  background-color: var(--color-bg-accent);
+  color: var(--color-text-accent);
+  border-radius: 6px 6px 0 0 ;
+  z-index: 1;
+  margin-bottom: 0.25em;
+}
+.fancy-hlists > li > ul {
+  flex-grow: 1;
+  display: block;
+  list-style-type: initial;
+  list-style-position: inside;
+  padding: 0;
+  padding-top: 2em;
+  padding-bottom: 0.5em;
+  margin: 0;
+  margin-top: -1.75em;
+  border: 3px solid var(--color-bg-accent);
+  border-radius: 6px;
+}
+.fancy-hlists > li > ul > li {
+  display: list-item;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+.fancy-hlists > li > ul > li > p {
+  display: inline-block;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* callout -------------------------------------------------------------*/
+/* 使い方の例:
+    <!-- @blockquote-class: callout -->
+    > abc
+    > def
+*/
+.slidejs section blockquote.callout {
+  all: unset;
+  display: block;
+  margin: 0.25em 0;
+  padding: 0.5em 1em;
+  border: 4px solid var(--color-bg-accent);
+  border-radius: 30px;
+  color: inherit;
+  box-sizing: border-box;
+  width: 100%;
+}
+.slidejs section blockquote.callout > p {
+  padding: 0.25em 0.5em;
+}
+.slidejs section blockquote.callout.strong > p {
+  font-size: 1.25em;
+  font-weight: bold;
+  font-style: italic;
+}
+.slidejs section blockquote.callout.centering > p {
+  text-align: center;
+}
+
+/* ===== Conclusion ===== */
+.slidejs section blockquote.callout.conclusion {
+  border-color: var(--conclusion-color, #4a6fa5);
+  background-color: var(--conclusion-bg, rgba(74,111,165,0.10));
+}
+
+/* ===== Question ===== */
+.slidejs section blockquote.callout.question {
+  border-color: var(--question-color, #1c8d81);
+  background-color: var(--question-bg, rgba(28,141,129,0.12));
+}
+
+/* ===== Key Point ===== */
+.slidejs section blockquote.callout.keypoint {
+  border-color: var(--keypoint-color, #2d6cdf);
+  background-color: var(--keypoint-bg, rgba(45,108,223,0.12));
+}
+
+/* ===== Note ===== */
+.slidejs section blockquote.callout.note {
+  border-color: var(--note-color, #5a5f73);
+  background-color: var(--note-bg, rgba(90,95,115,0.12));
+}
+
+/* ===== Example ===== */
+.slidejs section blockquote.callout.example {
+  border-color: var(--example-color, #6a5acd);
+  background-color: var(--example-bg, rgba(106,90,205,0.12));
+}
+
+/* ===== Tip / Insight ===== */
+.slidejs section blockquote.callout.tip {
+  border-color: var(--tip-color, #cfa72f);
+  background-color: var(--tip-bg, rgba(207,167,47,0.15));
+}
+
+/* ===== Warning ===== */
+.slidejs section blockquote.callout.warning {
+  border-color: var(--warning-color, #d9822b);
+  background-color: var(--warning-bg, rgba(217,130,43,0.15));
+}
+
+/* ===== Background Info ===== */
+.slidejs section blockquote.callout.background {
+  border-color: var(--background-color, #657a8e);
+  background-color: var(--background-bg, rgba(101,122,142,0.12));
+}
+
+
+/* ribbon -------------------------------------------------------------*/
+/* 使い方の例:
+    <!-- @li-class: ribbon -->
+    <!-- @li-attr: label: Hint -->
+    * ヒントです
+*/
+.slidejs li.ribbon[data-label] {
+    list-style: none;          
+    display: flex;             
+    align-items: baseline;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 0.25em;
+    line-height: inherit;
+}
+.slidejs li.ribbon[data-label] > p {
+    margin: 0;
+    margin-left: -0.5em;
+    padding: 0;
+    line-height: inherit;
+}
+.slidejs li.ribbon[data-label]::before {
+    content: attr(data-label);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.05em 0.55em;
+    min-height: 1em;
+    min-width: 3.2em;
+    border: 4px solid currentColor;
+    border-radius: 10px;
+    box-sizing: border-box;
+    font-size: 0.75em;
+    font-weight: 900;
+    transform: translateX(-1.2em);
+}
+
+.slidejs li.ribbon.hint::before {
+    border-color: #006ad4;
+    color: #006ad4;
+}
+.slidejs li.ribbon.note::before {
+    border-color: #5a6d7a;
+    color: #5a6d7a;
+}
+.slidejs li.ribbon.tip::before {
+    border-color: #c7972f;
+    color: #c7972f;
+}
+.slidejs li.ribbon.warning::before {
+    border-color: #c45a1a;
+    color: #c45a1a;
+}
+.slidejs li.ribbon.example::before {
+    border-color: #6a5acd;
+    color: #6a5acd;
+}
+.slidejs li.ribbon.question::before {
+    border-color: #1c8d81;
+    color: #1c8d81;
+}
+.slidejs li.ribbon.conclusion::before {
+    border-color: #2f4f8f;
+    color: #2f4f8f;
 }

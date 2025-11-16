@@ -268,15 +268,32 @@
                         return `<div class="multi-column"><div class="column" style="flex: ${this.multicolumn[this.columnIndex]}">`;
                     }
                     if (match[1] === "ul-class") {
-                        this.ulClass = match[2];
+                        (this.ulClass ?? (this.ulClass = [])).push(match[2]);
                         return "";
                     }
                     if (match[1] === "ol-class") {
-                        this.olClass = match[2];
+                        (this.olClass ?? (this.olClass = [])).push(match[2]);
+                        return "";
+                    }
+                    if (match[1] === "li-class") {
+                        (this.liClass ?? (this.liClass = [])).push(match[2]);
+                        return "";
+                    }
+                    if (match[1] === "li-attr") {
+                        const [label, value] = match[2].includes(":") ? match[2].split(/:\s*(.+)/).slice(0, 2) : [match[2], ""];
+                        (this.liAttrs ?? (this.liAttrs = {}))[label] = value;
+                        return "";
+                    }
+                    if (match[1] === "blockquote-class") {
+                        (this.blockquoteClass ?? (this.blockquoteClass = [])).push(match[2]);
+                        return "";
+                    }
+                    if (match[1] === "image-class") {
+                        (this.imageClass ?? (this.imageClass = [])).push(match[2]);
                         return "";
                     }
                     if (match[1] === "image-style") {
-                        this.imageStyle = match[2];
+                        (this.imageStyle ?? (this.imageStyle = [])).push(match[2]);
                         return "";
                     }
                     if (match[1] === "presenter") {
@@ -391,22 +408,38 @@
             },
             list(token) {
                 const tag = token.ordered ? "ol" : "ul";
-                const className = token.ordered ? (this.olClass ?? "") : (this.ulClass ?? "");
-
+                const className = token.ordered ? (this.olClass ?? []).join(" ") : (this.ulClass ?? []).join(" ");
+                if (token.ordered) {
+                    this.olClass = [];
+                } else {
+                    this.ulClass = [];
+                }
                 const body = token.items.map(item => {
                     const inner = this.parser.parse(item.tokens);
-                    return `<li>${inner}</li>`;
+                    const className = (this.liClass ?? []).join(" ");
+                    this.liClass = [];
+                    const attrs = this.liAttrs ? Object.entries(this.liAttrs).map(([k, v]) => ` data-${k}="${String(v)}"`).join("") : "";
+                    this.liAttrs = {};
+                    return `<li ${attrs} class="${className}">${inner}</li>`;
                 }).join("");
-
                 const start = token.start;
                 const startAttr = token.ordered && start != null && start !== "" && start !== 1 ? ` start="${start}"` : "";
-
                 return `<${tag} class="${className}"${startAttr}>${body}</${tag}>`;
+            },
+            blockquote(token) {
+                const inner = this.parser.parse(token.tokens);
+                const className = (this.blockquoteClass ?? []).join(" ");
+                this.blockquoteClass = [];
+                return `<blockquote class="${className}">${inner}</blockquote>`;
             },
             image(image) {
                 const caption = image.text ? image.text : this.caption;
                 this.caption = null;
-                let html = this.imageStyle ? `<img src="${image.href}" style="${this.imageStyle}" />` : `<img src="${image.href}" />`;
+                const className = (this.imageClass ?? []).join(" ");
+                const style = (this.style ?? []).join(" ");
+                this.imageClass = [];
+                this.imageStyle = [];
+                let html = `<img src="${image.href}" class="${className}" style="${style}" />`;
                 if (caption) {
                     html = html + `<span class="figcaption">${caption}</span>`;
                 }
@@ -756,4 +789,5 @@ class SlideJSSlideShow {
         this.is_active = false;
     }
 }
+
 

@@ -182,7 +182,81 @@ print("Hello")
   * `c`: 簡易ペイントツールの使用/不使用の切り換え
 
 ---
+<!-- @ul-class: fancy-hlists -->
+* 111
+  * aaa
+  * bbb
+* 222
+  * aaa
+  * bbb
 
+---
+
+<!-- @blockquote-class: callout -->
+<!-- @blockquote-class: conclusion -->
+<!-- @blockquote-class: strong -->
+<!-- @blockquote-class: centering -->
+> conclusion
+
+<!-- @blockquote-class: callout -->
+<!-- @blockquote-class: question -->
+> question
+
+<!-- @blockquote-class: callout -->
+<!-- @blockquote-class: keypoint -->
+> keypoint
+
+<!-- @blockquote-class: callout -->
+<!-- @blockquote-class: note -->
+> note
+
+<!-- @blockquote-class: callout -->
+<!-- @blockquote-class: example -->
+> example
+
+<!-- @blockquote-class: callout -->
+<!-- @blockquote-class: tip -->
+> tip
+
+<!-- @blockquote-class: callout -->
+<!-- @blockquote-class: warning -->
+> warning
+
+<!-- @blockquote-class: callout -->
+<!-- @blockquote-class: background -->
+> background
+
+---
+<!-- @li-class: ribbon -->
+<!-- @li-class: hint -->
+<!-- @li-attr: label: Hint -->
+* This is Hint
+<!-- @li-class: ribbon -->
+<!-- @li-class: note -->
+<!-- @li-attr: label: Note -->
+* This is Note
+<!-- @li-class: ribbon -->
+<!-- @li-class: tip -->
+<!-- @li-attr: label: Tip -->
+* This is Tip
+<!-- @li-class: ribbon -->
+<!-- @li-class: warning -->
+<!-- @li-attr: label: Warning -->
+* This is Warning
+<!-- @li-class: ribbon -->
+<!-- @li-class: example -->
+<!-- @li-attr: label: Example -->
+* This is Example
+<!-- @li-class: ribbon -->
+<!-- @li-class: question -->
+<!-- @li-attr: label: Question -->
+* This is Question
+<!-- @li-class: ribbon -->
+<!-- @li-class: conclusion -->
+<!-- @li-attr: label: Conclusion -->
+* This is Conclusion
+
+---
 <!-- このページはタイトルだけ -->
 <!-- @page: no-content -->
 # おわり
