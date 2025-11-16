@@ -415,11 +415,11 @@
                     this.ulClass = [];
                 }
                 const body = token.items.map(item => {
-                    const inner = this.parser.parse(item.tokens);
                     const className = (this.liClass ?? []).join(" ");
                     this.liClass = [];
                     const attrs = this.liAttrs ? Object.entries(this.liAttrs).map(([k, v]) => ` data-${k}="${String(v)}"`).join("") : "";
                     this.liAttrs = {};
+                    const inner = this.parser.parse(item.tokens);
                     return `<li ${attrs} class="${className}">${inner}</li>`;
                 }).join("");
                 const start = token.start;

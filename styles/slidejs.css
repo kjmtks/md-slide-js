@@ -94,7 +94,7 @@ section {
     max-height: 100%;
 }
 
-.slidejs .note {
+.slidejs div.note {
     display: none;
 }
 
@@ -798,36 +798,40 @@ button:active {
     <!-- @li-attr: label: Hint -->
     * ヒントです
 */
+/* li は普通のリストでOK */
 .slidejs li.ribbon[data-label] {
-    list-style: none;          
-    display: flex;             
-    align-items: baseline;
-    margin: 0;
+    list-style: none;
+    margin: 0 0 0.25em 0;
     padding: 0;
-    margin-bottom: 0.25em;
-    line-height: inherit;
+    margin-left: -1.2em;   /* ★ 左に 1.2em 入れて揃える */
 }
+
+/* 本文の p を inline-block にして、::before と同じ行に固定 */
 .slidejs li.ribbon[data-label] > p {
+    display: inline-block;   /* ★ これが決め手 */
     margin: 0;
-    margin-left: -0.5em;
     padding: 0;
-    line-height: inherit;
+    vertical-align: middle;  /* 行揃え綺麗に */
 }
+
+/* リボン */
 .slidejs li.ribbon[data-label]::before {
     content: attr(data-label);
-    display: inline-flex;
+    display: inline-flex;        /* 行内要素 */
     align-items: center;
     justify-content: center;
+
     padding: 0.05em 0.55em;
-    min-height: 1em;
-    min-width: 3.2em;
     border: 4px solid currentColor;
     border-radius: 10px;
-    box-sizing: border-box;
     font-size: 0.75em;
     font-weight: 900;
-    transform: translateX(-1.2em);
+
+    margin-right: 0.5em;         /* テキストとのギャップ一定 */
+    vertical-align: middle;      /* 行揃え綺麗に */
 }
+
+
 
 .slidejs li.ribbon.hint::before {
     border-color: #006ad4;

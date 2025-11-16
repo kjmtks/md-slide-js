@@ -232,10 +232,6 @@ print("Hello")
 <!-- @li-attr: label: Hint -->
 * This is Hint
 <!-- @li-class: ribbon -->
-<!-- @li-class: note -->
-<!-- @li-attr: label: Note -->
-* This is Note
-<!-- @li-class: ribbon -->
 <!-- @li-class: tip -->
 <!-- @li-attr: label: Tip -->
 * This is Tip
@@ -255,6 +251,10 @@ print("Hello")
 <!-- @li-class: conclusion -->
 <!-- @li-attr: label: Conclusion -->
 * This is Conclusion
+<!-- @li-class: ribbon -->
+<!-- @li-class: note -->
+<!-- @li-attr: label: Note -->
+* This is Note
 
 ---
 <!-- このページはタイトルだけ -->
