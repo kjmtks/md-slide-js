@@ -798,37 +798,30 @@ button:active {
     <!-- @li-attr: label: Hint -->
     * ヒントです
 */
-/* li は普通のリストでOK */
 .slidejs li.ribbon[data-label] {
     list-style: none;
     margin: 0 0 0.25em 0;
     padding: 0;
-    margin-left: -1.2em;   /* ★ 左に 1.2em 入れて揃える */
+    margin-left: -1.2em;
 }
-
-/* 本文の p を inline-block にして、::before と同じ行に固定 */
 .slidejs li.ribbon[data-label] > p {
-    display: inline-block;   /* ★ これが決め手 */
+    display: inline-block;
     margin: 0;
     padding: 0;
-    vertical-align: middle;  /* 行揃え綺麗に */
+    vertical-align: middle;
 }
-
-/* リボン */
 .slidejs li.ribbon[data-label]::before {
     content: attr(data-label);
-    display: inline-flex;        /* 行内要素 */
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-
     padding: 0.05em 0.55em;
     border: 4px solid currentColor;
     border-radius: 10px;
     font-size: 0.75em;
     font-weight: 900;
-
-    margin-right: 0.5em;         /* テキストとのギャップ一定 */
-    vertical-align: middle;      /* 行揃え綺麗に */
+    margin-right: 0.5em;
+    vertical-align: middle;
 }
 
 
