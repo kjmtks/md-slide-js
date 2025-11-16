@@ -790,6 +790,12 @@ button:active {
   border-color: var(--background-color, #657a8e);
   background-color: var(--background-bg, rgba(101,122,142,0.12));
 }
+/* ===== Important ===== */
+.slidejs section blockquote.callout.important {
+  border-color: var(--important-color, #b12222);
+  background-color: var(--important-bg, rgba(177, 34, 34, 0.15));
+}
+
 
 
 /* ribbon -------------------------------------------------------------*/
@@ -854,3 +860,8 @@ button:active {
     border-color: #2f4f8f;
     color: #2f4f8f;
 }
+.slidejs li.ribbon.important::before {
+    border-color: var(--important-color, #b12222);
+    color: var(--important-color, #b12222);
+}
+
