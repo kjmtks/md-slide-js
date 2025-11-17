@@ -436,7 +436,7 @@
                 const caption = image.text ? image.text : this.caption;
                 this.caption = null;
                 const className = (this.imageClass ?? []).join(" ");
-                const style = (this.style ?? []).join(" ");
+                const style = (this.imageStyle ?? []).join(" ");
                 this.imageClass = [];
                 this.imageStyle = [];
                 let html = `<img src="${image.href}" class="${className}" style="${style}" />`;
