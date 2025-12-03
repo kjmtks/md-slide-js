@@ -814,7 +814,7 @@ button:active {
     display: inline-block;
     margin: 0;
     padding: 0;
-    vertical-align: middle;
+    vertical-align: top;
 }
 .slidejs li.ribbon[data-label]::before {
     content: attr(data-label);
