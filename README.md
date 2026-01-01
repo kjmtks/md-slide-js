@@ -42,3 +42,28 @@ $ ln -s ~/myslides slides/myslides
 $ code .
 ```
 
+#### for VisualStudiCode
+`.vscode/tasks.json`:
+```json:.vscode/tasks.json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Auto npm start",
+      "type": "shell",
+      "command": "npm start",
+      "options": {
+          "cwd": "${workspaceFolder}"
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "my-startup-tasks"
+      }
+    }
+  ]
+}
+```
