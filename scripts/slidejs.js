@@ -233,22 +233,33 @@
     displayMathTokenizer(context) {
         return {
             name: "display_math",
-            level: "block",
-            start(src) { return src.indexOf("\[")?.index; },
+            // 重要1: 文中でも反応させるために 'inline' にします
+            // これで行頭の \[ ... \] も「段落の先頭にあるインライン要素」としてキャプチャされます
+            level: "inline", 
+
+            // 重要2: 文字列としてバックスラッシュを探すため '\\[' とします
+            start(src) { return src.indexOf("\\["); },
+
             tokenizer(src) {
-                const match = /^\\\[\s*(.*?)\s*\\\]/.exec(src);
+                // 重要3: 改行を含んでもマッチするように [\s\S] を使います
+                const match = /^\\\[\s*([\s\S]*?)\s*\\\]/.exec(src);
                 if (match) {
                     return {
                         type: 'display_math',
                         raw: match[0],
-                        text: match[1].trim(),
-                        tokens: match[1].trim()
+                        text: match[1].trim()
+                        // 重要4: tokens を返さないことで、内部の `_` をMarkdownとして解析させません
                     };
                 }
                 return false;
             },
+
             renderer(token) {
-                return `<div>\\[${token.text}\\]</div>`;
+                // 文中で使う場合、<div>で囲むとHTML的に <p>の中に<div>が入る形になり
+                // ブラウザの挙動として段落が割れてしまうことがあります。
+                // 挙動を確認し、必要であれば <span> や単なる文字列に変更してください。
+                return `\\[${token.text}\\]`; 
+                // もしMathJax/KaTeXなどが後から走るなら、単にこれで十分な場合が多いです
             }
         };
     }
