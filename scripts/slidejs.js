@@ -306,18 +306,22 @@
                     }
                     if (match[1] === "affiliation") {
                         this.affiliation = match[2];
+                        context.variables["affiliation"] = match[2];
                         return "";
                     }
                     if (match[1] === "title") {
                         this.title = match[2];
+                        context.variables["title"] = match[2];
                         return "";
                     }
                     if (match[1] === "subtitle") {
                         this.subtitle = match[2];
+                        context.variables["subtitle"] = match[2];
                         return "";
                     }
                     if (match[1] === "date") {
                         this.date = match[2];
+                        context.variables["date"] = match[2];
                         return "";
                     }
                     if (match[1] === "css") {
